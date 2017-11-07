@@ -1,6 +1,8 @@
 package net.malevy.hyperdemo.support;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +15,8 @@ import java.util.Map;
  * in a HTTP response, to avoid the need to invent new error response formats for HTTP APIs.
  * https://tools.ietf.org/html/draft-nottingham-http-problem-06
  */
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class HttpProblem {
 
     /**
@@ -46,7 +50,6 @@ public class HttpProblem {
      */
     private final Map<String, Object> additional = new HashMap<>();
 
-    @Builder
     public HttpProblem(String title, int status) {
         this.title = title;
         this.status = status;
