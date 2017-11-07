@@ -1,6 +1,18 @@
 spring:
   profiles:
-    active: local
+    active: local,h2
+
+---
+spring:
+  profiles: unittest
+
+---
+spring:
+  profiles: local
+
+---
+spring:
+  profiles: h2
   datasource:
     platform: H2
     url: jdbc:h2:mem:hyperdemo;Mode=Oracle;TRACE_LEVEL_SYSTEM_OUT=2
