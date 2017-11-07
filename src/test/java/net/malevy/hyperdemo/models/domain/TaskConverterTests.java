@@ -10,16 +10,9 @@ import static org.junit.Assert.*;
 
 public class TaskConverterTests {
 
-    private TaskConverter converter;
-
-    @Before
-    public void setup() {
-        this.converter = new TaskConverter();
-    }
-
     @Test(expected=IllegalArgumentException.class)
     public void whenDtoIsMissing_throw() {
-        this.converter.fromDto(null);
+        TaskConverter.fromDto(null);
     }
 
     @Test()
@@ -27,7 +20,7 @@ public class TaskConverterTests {
         TaskDto dto = new TaskDto(0, "A", "B", Task.Importance.HIGH.toString(),
                 LocalDate.of(2017, 11, 4), LocalDate.of(2017, 11, 5));
 
-        Task t = this.converter.fromDto(dto);
+        Task t = TaskConverter.fromDto(dto);
         assertEquals("the id is not correct", dto.getId(), t.getId());
         assertEquals("the title is not correct", dto.getTitle(), t.getTitle());
         assertEquals("the description is not correct", dto.getDescription(), t.getDescription());
@@ -41,7 +34,7 @@ public class TaskConverterTests {
         TaskDto dto = new TaskDto(0, "A", "B", null,
                 LocalDate.of(2017, 11, 4), LocalDate.of(2017, 11, 5));
 
-        Task t = this.converter.fromDto(dto);
+        Task t = TaskConverter.fromDto(dto);
         assertEquals("the importance is not correct", Task.Importance.NORMAL, t.getImportance());
 
     }

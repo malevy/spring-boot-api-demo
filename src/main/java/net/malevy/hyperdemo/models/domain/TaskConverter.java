@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 
 public class TaskConverter {
 
-    public Task fromDto(TaskDto dto) {
+    public static Task fromDto(TaskDto dto) {
         Assert.notNull(dto, "must provide a DTO instance");
 
         Task.Importance priority = Task.Importance
