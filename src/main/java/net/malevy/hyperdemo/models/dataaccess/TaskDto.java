@@ -2,17 +2,22 @@ package net.malevy.hyperdemo.models.dataaccess;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.malevy.hyperdemo.models.domain.Task;
+import org.springframework.util.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name="TASK")
+@Entity()
+@Table(name = "TASK")
 @Data()
-@AllArgsConstructor()
+@NoArgsConstructor()
+@AllArgsConstructor
 public class TaskDto {
 
     @Id
+    @GeneratedValue()
     private Integer id;
 
     private String title;
@@ -23,5 +28,14 @@ public class TaskDto {
 
     private LocalDate due;
 
+    @Column(name = "completedon")
     private LocalDate completedOn;
+
+    @PrePersist
+    void pre() {
+        if (StringUtils.isEmpty(this.importance)) {
+            this.importance = Task.Importance.NORMAL.toString();
+        }
+    }
+
 }
