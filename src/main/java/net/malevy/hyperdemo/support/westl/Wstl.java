@@ -41,10 +41,10 @@ public class Wstl {
     private @Setter Content content;
 
     /**
-     * A RECOMMENDED child property of the wstl element. If it exists, it MUST be a collection of maps that
+     * A RECOMMENDED child property of the wstl element. If it exists, it MUST be a collection of that
      * represent the data associated with the runtime request.
      */
-    private final List<Map<String, String>> data = new ArrayList<>();
+    private final List<DataItem> data = new ArrayList<>();
 
 }
 

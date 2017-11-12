@@ -20,7 +20,7 @@ public class Action {
     /**
      * The internal name of the transition. This is a REQUIRED property.
      */
-    private final @NonNull String name;
+    private final @Getter @NonNull String name;
 
     /**
      * A string that describes this transition. This is an OPTIONAL property.

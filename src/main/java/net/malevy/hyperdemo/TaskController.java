@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
@@ -26,12 +27,13 @@ public class TaskController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getTask(@PathVariable() Integer id) {
+    public ResponseEntity<?> getTask(@PathVariable() Integer id, UriComponentsBuilder uriBuilder) {
 
+        WstlMapper mapper = new WstlMapper(uriBuilder);
         GetSingleTaskCommand command = this.commandFactory.getCommand(GetSingleTaskCommand.class);
 
         Optional<Wstl> wstl = command.execute(id)
-                .map(WstlMapper::FromTask);
+                .map(mapper::FromTask);
 
         return wstl.isPresent()
                 ? ok(wstl.get())
