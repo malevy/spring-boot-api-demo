@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * WeSTL - Web Service Transition Language (http://rwcbook.github.io/wstl-spec/)
@@ -52,6 +53,14 @@ public class Wstl {
      */
     public boolean hasActions() {
         return !actions.isEmpty();
+    }
+
+    /**
+     * Determines if this instance has associated data items
+     * @return TRUE if this instance has associated Data; otherwise FALSE
+     */
+    public boolean hasData() {
+        return !data.isEmpty();
     }
 
 }

@@ -6,6 +6,7 @@ import com.theoryinpractise.halbuilder5.Links;
 import com.theoryinpractise.halbuilder5.ResourceRepresentation;
 import com.theoryinpractise.halbuilder5.json.JsonRepresentationWriter;
 import net.malevy.hyperdemo.support.westl.Action;
+import net.malevy.hyperdemo.support.westl.DataItem;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,10 +77,14 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
                 .map(Links::getHref)
                 .findFirst();
 
+        // render a single data item as the properties
+        Map<String, String> data = (wstl.hasData() && wstl.getData().size() == 1)
+                ? wstl.getData().get(0).getProperties()
+                : new HashMap<>();
+
         // WARNING - ResourceRepresentation instances are immutable. All operations
         // return a new instance
-        Map<String, Object> data = new HashMap<>();
-        ResourceRepresentation<Map<String, Object>> rootRep = selfLink
+        ResourceRepresentation<Map<String, String>> rootRep = selfLink
                 .map(sl -> ResourceRepresentation.create(sl, data))
                 .orElse(ResourceRepresentation.create(data));
 
@@ -106,6 +111,8 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
         List<Input> inputs = action.getInputs();
 
         if (action.hasInputs() && Action.Type.Safe.equals(action.getType())) {
+
+            // add the inputs as templates. See RFC6570
             String allInputs = inputs.stream()
                     .map(Input::getName)
                     .collect(Collectors.joining(","));

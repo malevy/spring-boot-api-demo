@@ -1,15 +1,18 @@
 package net.malevy.hyperdemo.messageconverters;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.theoryinpractise.halbuilder5.Link;
 import com.theoryinpractise.halbuilder5.Links;
 import com.theoryinpractise.halbuilder5.ResourceRepresentation;
 import com.theoryinpractise.halbuilder5.json.JsonRepresentationReader;
 import net.malevy.hyperdemo.support.westl.Action;
+import net.malevy.hyperdemo.support.westl.DataItem;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import okio.ByteString;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
@@ -17,7 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -75,7 +78,7 @@ public class HalWstlHttpMessageConverter_singleItemTest {
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
 
-        ResourceRepresentation<ByteString> rep = getHalMessageFromOutputMessage(output);
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel("pet").get(0);
         assertEquals("has the wrong href", action.getHref().toString(), Links.getHref(petLink));
@@ -108,7 +111,7 @@ public class HalWstlHttpMessageConverter_singleItemTest {
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
 
-        ResourceRepresentation<ByteString> rep = getHalMessageFromOutputMessage(output);
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel("search").get(0);
         assertEquals("has the wrong href", action.getHref().toString() + "{?name}" , Links.getHref(petLink));
@@ -133,16 +136,41 @@ public class HalWstlHttpMessageConverter_singleItemTest {
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
 
-        ResourceRepresentation<ByteString> rep = getHalMessageFromOutputMessage(output);
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel(WellKnown.Rels.SELF).get(0);
         assertEquals("has the wrong href", action.getHref().toString(), Links.getHref(petLink));
     }
 
-    private ResourceRepresentation<ByteString> getHalMessageFromOutputMessage(MockHttpOutputMessage output) {
+    @Test
+    @SuppressWarnings("unchecked")
+    public void whenASingleDataItemExists_RenderItAtTheRoot() throws URISyntaxException, IOException {
+        Wstl w = new Wstl();
+
+        DataItem di = new DataItem();
+        di.getProperties().put("foo","bar");
+        di.getProperties().put("now","n' later");
+        w.getData().add(di);
+
+        MockHttpOutputMessage output = new MockHttpOutputMessage();
+        this.converter.writeInternal(w, output);
+
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
+
+        Map<String, String> data = (HashMap<String,String>)rep.get();
+        assertEquals("foo has the wrong value", di.getProperties().get("foo"), data.get("foo"));
+        assertEquals("now has the wrong value", di.getProperties().get("now"), data.get("now"));
+
+    }
+
+
+    private ResourceRepresentation<HashMap> getHalMessageFromOutputMessage(MockHttpOutputMessage output) {
+
         JsonRepresentationReader halMessageReader = JsonRepresentationReader.create();
         StringReader reader = new StringReader(output.getBodyAsString());
-        return halMessageReader.read(reader);
+
+        return halMessageReader.read(reader, HashMap.class);
     }
+
 
 }
