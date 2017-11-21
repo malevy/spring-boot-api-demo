@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
+import net.malevy.hyperdemo.messageconverters.WellKnown;
 
 import java.net.URI;
 import java.util.List;
@@ -76,4 +77,21 @@ public class Action {
      */
     private @Singular @Getter List<Input> inputs;
 
+    /**
+     * Are there any inputs associated with this action?
+     * @return boolean - TRUE if there are any inputs for this action; otherwise FALSE
+     */
+    public boolean hasInputs() {
+        return null != this.inputs && !inputs.isEmpty();
+    }
+
+    /**
+     * Determines if this Action represents the URI of the associated resource
+     * @return boolean - TRUE if this is a SELF URI; otherwise FALSE
+     */
+    public boolean isSelf() {
+        if (null == rels) return false;
+        return rels.stream()
+                .anyMatch(r -> WellKnown.Rels.SELF.equalsIgnoreCase(r));
+    }
 }

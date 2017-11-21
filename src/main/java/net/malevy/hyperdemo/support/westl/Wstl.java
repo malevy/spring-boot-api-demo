@@ -46,5 +46,13 @@ public class Wstl {
      */
     private final List<DataItem> data = new ArrayList<>();
 
+    /**
+     * Determine if this instance has associated Actions
+     * @return TRUE if this instance has Actions; otherwise FALSE
+     */
+    public boolean hasActions() {
+        return !actions.isEmpty();
+    }
+
 }
 
