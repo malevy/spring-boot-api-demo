@@ -117,30 +117,16 @@ public class HalWstlHttpMessageConverter_singleItemTest {
     }
 
     @Test
-    public void whenSafeLinkWithMultipleInputs_ShouldBeRenderedAsSingleTemplate() throws URISyntaxException, IOException {
+    public void whenASelfActionIsPresent_RenderItAsALink() throws URISyntaxException, IOException {
         Wstl w = new Wstl();
 
-        Input petNameInput = Input.builder()
-                .name("name")
-                .prompt("pet name")
-                .required(true)
-                .type(Input.Type.Text)
-                .build();
-        Input petAgeInput = Input.builder()
-                .name("age")
-                .prompt("pet age")
-                .required(false)
-                .type(Input.Type.Text)
-                .build();
         Action action = Action.builder()
-                .rel("search")
-                .name("search-pets")
-                .href(new URI("http://server.net/pets"))
-                .prompt("search pets")
+                .rel(WellKnown.Rels.SELF)
+                .name("juno")
+                .href(new URI("http://server.net/pets/1"))
+                .prompt("Juno")
                 .type(Action.Type.Safe)
                 .action(Action.RequestType.Read)
-                .input(petNameInput)
-                .input(petAgeInput)
                 .build();
         w.getActions().add(action);
 
@@ -149,8 +135,8 @@ public class HalWstlHttpMessageConverter_singleItemTest {
 
         ResourceRepresentation<ByteString> rep = getHalMessageFromOutputMessage(output);
 
-        Link petLink = rep.getLinksByRel("search").get(0);
-        assertEquals("has the wrong href", action.getHref().toString() + "{?name,age}" , Links.getHref(petLink));
+        Link petLink = rep.getLinksByRel(WellKnown.Rels.SELF).get(0);
+        assertEquals("has the wrong href", action.getHref().toString(), Links.getHref(petLink));
     }
 
     private ResourceRepresentation<ByteString> getHalMessageFromOutputMessage(MockHttpOutputMessage output) {

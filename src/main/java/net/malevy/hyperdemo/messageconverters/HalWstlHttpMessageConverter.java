@@ -18,10 +18,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -72,9 +69,28 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
             topLevelLinks.addAll(links);
         }
 
+        // render any self link
+        Optional<String> selfLink = wstl.getActions().stream()
+                .filter(Action::isSelf)
+                .map(this::buildLinkFrom)
+                .map(Links::getHref)
+                .findFirst();
+
+        // WARNING - ResourceRepresentation instances are immutable. All operations
+        // return a new instance
         Map<String, Object> data = new HashMap<>();
-        ResourceRepresentation<Map<String, Object>> rootRep = ResourceRepresentation.create(data)
-                .withLinks(io.vavr.collection.List.ofAll(topLevelLinks));
+        ResourceRepresentation<Map<String, Object>> rootRep = selfLink
+                .map(sl -> ResourceRepresentation.create(sl, data))
+                .orElse(ResourceRepresentation.create(data));
+
+        // TODO - replace this loop with a call to withLinks() when a version > 5.1.1 is released
+        // withLinks() has a bug where any existing link is not carried into the new instance.
+        // the bug has been fixed with https://github.com/HalBuilder/halbuilder-core/commit/fae97a80e8e93808d2d377294676983336d9dd03
+        // but I've not seen an updated release to Maven yet.
+        // rootRep = rootRep.withLinks(io.vavr.collection.List.ofAll(topLevelLinks));
+        for(Link link : topLevelLinks) {
+            rootRep = rootRep.withLink(link);
+        }
 
         JsonRepresentationWriter writer = JsonRepresentationWriter.create();
         writer.print(rootRep).write(outputMessage.getBody());
