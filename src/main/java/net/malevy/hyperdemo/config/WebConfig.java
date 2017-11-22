@@ -15,7 +15,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new HalWstlHttpMessageConverter());
+
+        // insert the convert at the front of the list so that our requests aren't
+        // hijacked by the jackson converter. the jackson converter registers support
+        // for the mediatype 'application/*+json'
+        converters.add(0, new HalWstlHttpMessageConverter());
     }
 
     @Override

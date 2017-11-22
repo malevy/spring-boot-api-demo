@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @Getter
-public class Wstl {
+public class Wstl implements HasActions {
 
     /**
      * An OPTIONAL child property of the wstl element. It SHOULD be set to the title string of the runtime resource.
@@ -45,7 +45,7 @@ public class Wstl {
      * A RECOMMENDED child property of the wstl element. If it exists, it MUST be a collection of that
      * represent the data associated with the runtime request.
      */
-    private final List<DataItem> data = new ArrayList<>();
+    private final List<Datum> data = new ArrayList<>();
 
     /**
      * Determine if this instance has associated Actions

@@ -2,7 +2,7 @@ package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.support.westl.Action;
-import net.malevy.hyperdemo.support.westl.DataItem;
+import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class WstlMapperTest {
         t.markComplete(LocalDate.of(2017, 11, 13));
 
         Wstl wstl = mapper.FromTask(t);
-        DataItem taskItem = wstl.getData().stream()
+        Datum taskItem = wstl.getData().stream()
                 .findFirst()
                 .get();
 
@@ -50,7 +50,7 @@ public class WstlMapperTest {
         Task t = new Task(42, "new one");
 
         Wstl wstl = mapper.FromTask(t);
-        DataItem taskItem = wstl.getData().stream()
+        Datum taskItem = wstl.getData().stream()
                 .findFirst()
                 .get();
 

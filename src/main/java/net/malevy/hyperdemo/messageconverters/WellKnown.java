@@ -8,5 +8,6 @@ public class WellKnown {
 
     public static class Rels {
         public static String SELF = "self";
+        public static String ITEM = "item";
     }
 }

@@ -1,23 +1,17 @@
 package net.malevy.hyperdemo.messageconverters;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.theoryinpractise.halbuilder5.Link;
 import com.theoryinpractise.halbuilder5.Links;
 import com.theoryinpractise.halbuilder5.ResourceRepresentation;
-import com.theoryinpractise.halbuilder5.json.JsonRepresentationReader;
 import net.malevy.hyperdemo.support.westl.Action;
-import net.malevy.hyperdemo.support.westl.DataItem;
+import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import okio.ByteString;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.GenericTypeResolver;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -26,14 +20,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class HalWstlHttpMessageConverter_singleItemTest {
-
-    private HalWstlHttpMessageConverter converter;
-
-    @Before
-    public void setup() {
-        this.converter = new HalWstlHttpMessageConverter();
-    }
+public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessageConverterTestBase {
 
     @Test
     public void converterSupportsHal() {
@@ -147,7 +134,7 @@ public class HalWstlHttpMessageConverter_singleItemTest {
     public void whenASingleDataItemExists_RenderItAtTheRoot() throws URISyntaxException, IOException {
         Wstl w = new Wstl();
 
-        DataItem di = new DataItem();
+        Datum di = new Datum(WellKnown.Rels.ITEM);
         di.getProperties().put("foo","bar");
         di.getProperties().put("now","n' later");
         w.getData().add(di);
@@ -163,13 +150,76 @@ public class HalWstlHttpMessageConverter_singleItemTest {
 
     }
 
+    @Test
+    public void whenASingleDataItemExists_UseItsSelfLink() throws URISyntaxException, IOException {
+        Wstl w = new Wstl();
+        Action original = Action.builder()
+                .rel(WellKnown.Rels.SELF)
+                .name("noop")
+                .href(new URI("http://server.net/noop/1"))
+                .prompt("noop")
+                .type(Action.Type.Safe)
+                .action(Action.RequestType.Read)
+                .build();
+        w.getActions().add(original);
 
-    private ResourceRepresentation<HashMap> getHalMessageFromOutputMessage(MockHttpOutputMessage output) {
+        Action action = Action.builder()
+                .rel(WellKnown.Rels.SELF)
+                .name("juno")
+                .href(new URI("http://server.net/pets/1"))
+                .prompt("Juno")
+                .type(Action.Type.Safe)
+                .action(Action.RequestType.Read)
+                .build();
+        Datum di = new Datum(WellKnown.Rels.ITEM);
+        di.getActions().add(action);
+        di.getProperties().put("foo","bar");
+        di.getProperties().put("now","n' later");
+        w.getData().add(di);
 
-        JsonRepresentationReader halMessageReader = JsonRepresentationReader.create();
-        StringReader reader = new StringReader(output.getBodyAsString());
+        MockHttpOutputMessage output = new MockHttpOutputMessage();
+        this.converter.writeInternal(w, output);
 
-        return halMessageReader.read(reader, HashMap.class);
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
+        Link petLink = rep.getLinksByRel(WellKnown.Rels.SELF).get(0);
+        assertEquals("has the wrong self link", action.getHref().toString(), Links.getHref(petLink));
+
+    }
+
+    @Test
+    public void whenASingleDataItemExists_CombineNonSelfActions() throws URISyntaxException, IOException {
+        Wstl w = new Wstl();
+        Action noop1 = Action.builder()
+                .rel("noop1")
+                .name("noop")
+                .href(new URI("http://server.net/noop/1"))
+                .prompt("noop")
+                .type(Action.Type.Safe)
+                .action(Action.RequestType.Read)
+                .build();
+        w.getActions().add(noop1);
+
+        Action noop2 = Action.builder()
+                .rel("noop2")
+                .name("noop2")
+                .href(new URI("http://server.net/noop/2"))
+                .prompt("noop2")
+                .type(Action.Type.Safe)
+                .action(Action.RequestType.Read)
+                .build();
+        Datum di = new Datum(WellKnown.Rels.ITEM);
+        di.getActions().add(noop2);
+        w.getData().add(di);
+
+        MockHttpOutputMessage output = new MockHttpOutputMessage();
+        this.converter.writeInternal(w, output);
+
+        ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
+        Link noop1Link = rep.getLinksByRel("noop1").get(0);
+        assertEquals("noop1 was not found", noop1.getHref().toString(), Links.getHref(noop1Link));
+        Link noop2Link = rep.getLinksByRel("noop2").get(0);
+        assertEquals("noop2 was not found", noop2.getHref().toString(), Links.getHref(noop2Link));
+
     }
 
 

@@ -1,8 +1,9 @@
 package net.malevy.hyperdemo;
 
+import net.malevy.hyperdemo.messageconverters.WellKnown;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.support.westl.Action;
-import net.malevy.hyperdemo.support.westl.DataItem;
+import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -31,7 +32,7 @@ public class WstlMapper {
         return root;
     }
 
-    private DataItem taskToDataItem(Task t) {
+    private Datum taskToDataItem(Task t) {
 
         URI selfLink = this.uriBuilder
                 .withMethodCall(on(TaskController.class).getTask(t.getId(), null))
@@ -45,7 +46,7 @@ public class WstlMapper {
                 .href(selfLink)
                 .build();
 
-        DataItem item = new DataItem();
+        Datum item = new Datum(WellKnown.Rels.ITEM);
         if (StringUtils.hasText(t.getTitle())) item.getProperties().put(Task.Properties.title, t.getTitle());
         if (StringUtils.hasText(t.getDescription())) item.getProperties().put(Task.Properties.description, t.getDescription());
         item.getProperties().put(Task.Properties.importance, t.getImportance().toString());

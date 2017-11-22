@@ -1,12 +1,9 @@
 package net.malevy.hyperdemo.messageconverters;
 
-
-import com.theoryinpractise.halbuilder5.Link;
-import com.theoryinpractise.halbuilder5.Links;
-import com.theoryinpractise.halbuilder5.ResourceRepresentation;
+import com.theoryinpractise.halbuilder5.*;
 import com.theoryinpractise.halbuilder5.json.JsonRepresentationWriter;
 import net.malevy.hyperdemo.support.westl.Action;
-import net.malevy.hyperdemo.support.westl.DataItem;
+import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,6 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
 
     public final static MediaType halJson = new MediaType("application", "hal+json");
 
-    @Autowired
     public HalWstlHttpMessageConverter() {
         super(halJson);
     }
@@ -58,49 +54,87 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
     @Override
     protected void writeInternal(Wstl wstl, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 
+        // WARNING - ResourceRepresentation instances are immutable. All operations
+        // return a new instance
+        ResourceRepresentation<Map<String, String>> rootRep = hasSingleDataItem(wstl)
+                ? this.renderFrom(wstl.getData().get(0))
+                : ResourceRepresentation.create(new HashMap<>());
 
-        List<Link> topLevelLinks = new ArrayList<>();
-
-        // render top-level actions
+        // render top-level actions that should not be self links
         if (wstl.hasActions()) {
             List<Link> links = wstl.getActions().stream()
                     .filter(a -> !a.isSelf())
                     .map(this::buildLinkFrom)
                     .collect(Collectors.toList());
-            topLevelLinks.addAll(links);
+
+            // TODO - replace this loop with a call to withLinks() when a version > 5.1.1 is released
+            // withLinks() has a bug where any existing link is not carried into the new instance.
+            // the bug has been fixed with https://github.com/HalBuilder/halbuilder-core/commit/fae97a80e8e93808d2d377294676983336d9dd03
+            // but I've not seen an updated release to Maven yet.
+            // rootRep = rootRep.withLinks(io.vavr.collection.List.ofAll(topLevelLinks));
+            for(Link link : links) {
+                rootRep = rootRep.withLink(link);
+            }
+
+            if (rootRep.getLinkByRel(WellKnown.Rels.SELF).isEmpty()) {
+
+                Optional<Link> selfLink = wstl.getActions().stream()
+                        .filter(Action::isSelf)
+                        .map(this::buildLinkFrom)
+                        .limit(1)
+                        .findFirst();
+
+                if (selfLink.isPresent()) rootRep = rootRep.withLink(selfLink.get());
+            }
         }
 
-        // render any self link
-        Optional<String> selfLink = wstl.getActions().stream()
-                .filter(Action::isSelf)
-                .map(this::buildLinkFrom)
-                .map(Links::getHref)
-                .findFirst();
-
-        // render a single data item as the properties
-        Map<String, String> data = (wstl.hasData() && wstl.getData().size() == 1)
-                ? wstl.getData().get(0).getProperties()
-                : new HashMap<>();
-
-        // WARNING - ResourceRepresentation instances are immutable. All operations
-        // return a new instance
-        ResourceRepresentation<Map<String, String>> rootRep = selfLink
-                .map(sl -> ResourceRepresentation.create(sl, data))
-                .orElse(ResourceRepresentation.create(data));
-
-        // TODO - replace this loop with a call to withLinks() when a version > 5.1.1 is released
-        // withLinks() has a bug where any existing link is not carried into the new instance.
-        // the bug has been fixed with https://github.com/HalBuilder/halbuilder-core/commit/fae97a80e8e93808d2d377294676983336d9dd03
-        // but I've not seen an updated release to Maven yet.
-        // rootRep = rootRep.withLinks(io.vavr.collection.List.ofAll(topLevelLinks));
-        for(Link link : topLevelLinks) {
-            rootRep = rootRep.withLink(link);
+        if (!hasSingleDataItem(wstl)) {
+            for(Datum item : wstl.getData()) {
+                rootRep = rootRep.withRepresentation(item.getClassification(), renderFrom(item));
+            }
         }
 
         JsonRepresentationWriter writer = JsonRepresentationWriter.create();
         writer.print(rootRep).write(outputMessage.getBody());
 
     }
+
+    private ResourceRepresentation<Map<String, String>> renderFrom(Datum datum) {
+
+        Map<String, String> data = datum.getProperties();
+
+        List<Link> links = datum.getActions().stream()
+                .filter(a -> !a.isSelf())
+                .map(this::buildLinkFrom)
+                .collect(Collectors.toList());
+
+        Optional<String> selfLink = datum.getActions().stream()
+                .filter(Action::isSelf)
+                .map(this::buildLinkFrom)
+                .map(Links::getHref)
+                .findFirst();
+
+        ResourceRepresentation<Map<String, String>> rep = selfLink
+                .map(sl -> ResourceRepresentation.create(sl, data))
+                .orElse(ResourceRepresentation.create(data));
+
+        for(Link link : links) {
+            rep = rep.withLink(link);
+        }
+
+        Rel rel = Rels.singleton((StringUtils.hasText(datum.getClassification()))
+                ? datum.getClassification()
+                : WellKnown.Rels.ITEM);
+
+        rep = rep.withRel(rel);
+
+        return rep;
+    }
+
+    private boolean hasSingleDataItem(Wstl wstl) {
+        return wstl.hasData() && wstl.getData().size() == 1;
+    }
+
 
     private Link buildLinkFrom(Action action) {
         String rel = action.getRels().stream().findFirst().orElse("related");
