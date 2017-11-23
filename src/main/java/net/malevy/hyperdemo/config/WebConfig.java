@@ -2,6 +2,7 @@ package net.malevy.hyperdemo.config;
 
 import net.malevy.hyperdemo.messageconverters.HalWstlHttpMessageConverter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -10,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.List;
 
 @Configuration
-@EnableWebMvc
+@Profile("!unittest")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override

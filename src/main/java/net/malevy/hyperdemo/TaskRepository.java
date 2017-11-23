@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface TaskRepository extends PagingAndSortingRepository<TaskDto, Integer> {
 
     Optional<TaskDto> findById(Integer id);
+
+
 }

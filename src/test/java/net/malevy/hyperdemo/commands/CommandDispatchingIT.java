@@ -1,34 +1,38 @@
 package net.malevy.hyperdemo.commands;
 
 import net.malevy.hyperdemo.HypermediaDemoApplication;
+import net.malevy.hyperdemo.commands.CommandDispatchingTestComponents.StubCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 @ActiveProfiles(profiles = "unittest")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {HypermediaDemoApplication.class, CommandFactoryIT.class})
+@ContextConfiguration(classes = {CommandDispatchingIT.class, HypermediaDemoApplication.class})
 @ComponentScan
-public class CommandFactoryIT {
+public class CommandDispatchingIT {
 
     @Autowired
-    private CommandFactory factory;
+    private CommandDispatcher dispatcher;
 
     @Test
-    public void whenRequested_canCreateCommand() {
-        TestCommand cmd = factory.getCommand(TestCommand.class);
-        assertNotNull("the command was not created", cmd);
+    public void canResolveHandler() throws NoHandlerException {
+
+        StubCommand command = new StubCommand() {{
+            a = 1;
+            b = 2;
+        }};
+
+        Integer result = this.dispatcher.handle(command);
+
+        assertEquals("the result is not right",(Integer)3, result);
+
     }
-
-
-    @Component
-    class TestCommand implements Command {}
-
 }
+

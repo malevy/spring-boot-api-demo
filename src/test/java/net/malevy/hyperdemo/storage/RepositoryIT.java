@@ -2,16 +2,15 @@ package net.malevy.hyperdemo.storage;
 
 import net.malevy.hyperdemo.HypermediaDemoApplication;
 import net.malevy.hyperdemo.TaskRepository;
-import net.malevy.hyperdemo.commands.CommandFactoryIT;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -21,6 +20,7 @@ import static org.junit.Assert.*;
 @ActiveProfiles(profiles = {"h2"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {HypermediaDemoApplication.class})
+@WebAppConfiguration
 // just to verify that the config is correct
 public class RepositoryIT {
 
