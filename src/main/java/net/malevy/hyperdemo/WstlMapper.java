@@ -33,17 +33,15 @@ public class WstlMapper {
     }
 
     private Datum taskToDataItem(Task t) {
-
-        URI selfLink = this.uriBuilder
-                .withMethodCall(on(TaskController.class).getTask(t.getId(), null))
-                .build()
-                .toUri();
+        String selfLink = this.uriBuilder
+                .withMethodName(TaskController.class, "getTask", t.getId(), null)
+                .toUriString();
         Action self = Action.builder()
                 .rel("self")
                 .name("self")
                 .type(Action.Type.Safe)
                 .action(Action.RequestType.Read)
-                .href(selfLink)
+                .href(URI.create(selfLink))
                 .build();
 
         Datum item = new Datum(WellKnown.Rels.ITEM);

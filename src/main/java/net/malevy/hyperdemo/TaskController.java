@@ -8,10 +8,7 @@ import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
@@ -28,8 +25,8 @@ public class TaskController {
         this.dispatcher = dispatcher;
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getTask(@PathVariable() Integer id, UriComponentsBuilder uriBuilder) {
+    @GetMapping(name = "task-gettask", path = "/{id}")
+    public ResponseEntity<?> getTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) {
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
         GetSingleTaskCommand command = new GetSingleTaskCommand(){{
@@ -42,7 +39,7 @@ public class TaskController {
 
             return wstl.isPresent()
                     ? ok(wstl.get())
-                    : notFound(id);
+                    : notFound(command.getId());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,7 +54,7 @@ public class TaskController {
     private ResponseEntity<HttpProblem> notFound(Integer id) {
 
         HttpProblem problem = HttpProblem.builder()
-                .title(String.format("Task with id {%s} not found", id))
+                .title(String.format("Task with id %s not found", id))
                 .status(HttpStatus.NOT_FOUND.value())
                 .build();
 
@@ -71,6 +68,16 @@ public class TaskController {
                 .build();
 
         return new ResponseEntity<HttpProblem>(problem, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<HttpProblem> badRequest(String param) {
+
+        HttpProblem problem = HttpProblem.builder()
+                .title(String.format("unable to process request. the required value '%s' was not provided", param))
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build();
+
+        return new ResponseEntity<>(problem, HttpStatus.BAD_REQUEST);
     }
 
 }
