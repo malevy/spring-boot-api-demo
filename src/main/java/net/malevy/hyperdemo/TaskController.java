@@ -1,16 +1,19 @@
 package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.commands.CommandDispatcher;
+import net.malevy.hyperdemo.commands.DeleteSingleTaskCommand;
 import net.malevy.hyperdemo.commands.GetSingleTaskCommand;
 import net.malevy.hyperdemo.commands.NoHandlerException;
 import net.malevy.hyperdemo.support.HttpProblem;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.Console;
 import java.util.Optional;
 
 @RestController
@@ -25,30 +28,43 @@ public class TaskController {
         this.dispatcher = dispatcher;
     }
 
-    @GetMapping(name = "task-gettask", path = "/{id}")
-    public ResponseEntity<?> getTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) {
+    @ExceptionHandler(NoHandlerException.class)
+    ResponseEntity<HttpProblem> handleNoHandlerException(NoHandlerException nhe) {
+        //TODO - should be logging this
+        return this.serverError();
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) throws NoHandlerException {
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
         GetSingleTaskCommand command = new GetSingleTaskCommand(){{
             setId(id);
         }};
 
-        try {
             Optional<Wstl> wstl = dispatcher.handle(command)
                     .map(mapper::FromTask);
 
             return wstl.isPresent()
                     ? ok(wstl.get())
                     : notFound(command.getId());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return serverError();
-        }
     }
 
-    private ResponseEntity<Wstl> ok(Wstl wstl) {
-        return new ResponseEntity<>(wstl, HttpStatus.OK);
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable Integer id) throws NoHandlerException {
+
+        DeleteSingleTaskCommand command = new DeleteSingleTaskCommand(){{
+            setId(id);
+        }};
+
+        String result = dispatcher.handle(command);
+
+        return ok(result);
+    }
+
+    private <T> ResponseEntity<T> ok(T content) {
+
+        return ResponseEntity.ok(content);
     }
 
     private ResponseEntity<HttpProblem> notFound(Integer id) {
@@ -58,7 +74,12 @@ public class TaskController {
                 .status(HttpStatus.NOT_FOUND.value())
                 .build();
 
-        return new ResponseEntity<>(problem, HttpStatus.NOT_FOUND);
+        ResponseEntity<HttpProblem> response = ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(problem);
+
+        return response;
     }
 
     private ResponseEntity<HttpProblem> serverError() {
@@ -67,7 +88,12 @@ public class TaskController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build();
 
-        return new ResponseEntity<HttpProblem>(problem, HttpStatus.INTERNAL_SERVER_ERROR);
+        ResponseEntity<HttpProblem> response = ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(problem);
+
+        return response;
     }
 
     private ResponseEntity<HttpProblem> badRequest(String param) {
@@ -77,7 +103,11 @@ public class TaskController {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .build();
 
-        return new ResponseEntity<>(problem, HttpStatus.BAD_REQUEST);
-    }
+        ResponseEntity<HttpProblem> response = ResponseEntity
+                .badRequest()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(problem);
 
+        return response;
+    }
 }

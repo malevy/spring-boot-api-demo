@@ -18,6 +18,11 @@ public class WstlMapper {
 
     private final MvcUriComponentsBuilder uriBuilder;
 
+    public static class Actions {
+        public static final String SELF = "self";
+        public static final String DELETE = "delete-task";
+    }
+
     public WstlMapper(UriComponentsBuilder uriComponentsBuilder) {
         this.uriBuilder = MvcUriComponentsBuilder.relativeTo(uriComponentsBuilder);
     }
@@ -33,16 +38,8 @@ public class WstlMapper {
     }
 
     private Datum taskToDataItem(Task t) {
-        String selfLink = this.uriBuilder
-                .withMethodName(TaskController.class, "getTask", t.getId(), null)
-                .toUriString();
-        Action self = Action.builder()
-                .rel("self")
-                .name("self")
-                .type(Action.Type.Safe)
-                .action(Action.RequestType.Read)
-                .href(URI.create(selfLink))
-                .build();
+        Action self = createSelfAction(t);
+        Action delete = createDeleteAction(t);
 
         Datum item = new Datum(WellKnown.Rels.ITEM);
         if (StringUtils.hasText(t.getTitle())) item.getProperties().put(Task.Properties.title, t.getTitle());
@@ -52,7 +49,35 @@ public class WstlMapper {
         if (null != t.getCompletedOn()) item.getProperties().put(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
 
         item.getActions().add(self);
+        item.getActions().add(delete);
 
         return item;
     }
+
+    private Action createSelfAction(Task t) {
+        String selfLink = this.uriBuilder
+                .withMethodName(TaskController.class, "getTask", t.getId(), null)
+                .toUriString();
+        return Action.builder()
+                .rel(WellKnown.Rels.SELF)
+                .name(Actions.SELF)
+                .type(Action.Type.Safe)
+                .action(Action.RequestType.Read)
+                .href(URI.create(selfLink))
+                .build();
+    }
+
+    private Action createDeleteAction(Task t) {
+        String deleteLink = this.uriBuilder
+                .withMethodName(TaskController.class, "deleteTask", t.getId())
+                .toUriString();
+        return Action.builder()
+                .rel(WellKnown.Rels.DELETE)
+                .name(Actions.DELETE)
+                .type(Action.Type.Unsafe)
+                .action(Action.RequestType.Remove)
+                .href(URI.create(deleteLink))
+                .build();
+    }
+
 }

@@ -55,13 +55,32 @@ public class WstlMapperTest {
                 .get();
 
         Action selfAction = taskItem.getActions().stream()
-                .filter(a -> "self".equalsIgnoreCase(a.getName()))
+                .filter(a -> WstlMapper.Actions.SELF.equalsIgnoreCase(a.getName()))
                 .findFirst()
                 .get();
 
-        assertEquals("name is wrong","self", selfAction.getName());
         assertEquals("type is wrong", Action.Type.Safe, selfAction.getType());
         assertEquals("action is wrong", Action.RequestType.Read, selfAction.getAction());
+        assertEquals("uri is wrong", "http://localhost/tasks/42", selfAction.getHref().toString());
+    }
+
+    @Test
+    public void whenBuilt_taskHasDeleteLink() {
+
+        Task t = new Task(42, "new one");
+
+        Wstl wstl = mapper.FromTask(t);
+        Datum taskItem = wstl.getData().stream()
+                .findFirst()
+                .get();
+
+        Action selfAction = taskItem.getActions().stream()
+                .filter(a -> WstlMapper.Actions.DELETE.equalsIgnoreCase(a.getName()))
+                .findFirst()
+                .get();
+
+        assertEquals("type is wrong", Action.Type.Unsafe, selfAction.getType());
+        assertEquals("action is wrong", Action.RequestType.Remove, selfAction.getAction());
         assertEquals("uri is wrong", "http://localhost/tasks/42", selfAction.getHref().toString());
     }
 

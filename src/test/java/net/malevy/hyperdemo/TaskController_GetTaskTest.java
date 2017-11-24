@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class TaskControllerTest {
+public class TaskController_GetTaskTest {
 
     @Mock
     private CommandDispatcher dispatcher;
@@ -58,6 +58,7 @@ public class TaskControllerTest {
     @Test
     public void whenTheTaskIsNotFound_ReturnNotFound() throws NoHandlerException {
 
+
         Mockito.when(dispatcher.handle(Mockito.any(GetSingleTaskCommand.class)))
                 .thenReturn(Optional.empty());
 
@@ -69,18 +70,5 @@ public class TaskControllerTest {
         assertEquals("the title is wrong", "Task with id 1 not found", p.getTitle());
     }
 
-    @Test
-    public void whenTheHandlerThrows_ReturnServerError() throws NoHandlerException {
-
-        Mockito.when(dispatcher.handle(Mockito.any(GetSingleTaskCommand.class)))
-                .thenThrow(new NoHandlerException("foot"));
-
-        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
-
-        assertEquals("the status is wrong", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        HttpProblem p = (HttpProblem) response.getBody();
-        assertEquals("the http problem status is wrong", HttpStatus.INTERNAL_SERVER_ERROR.value(), p.getStatus());
-
-    }
 
 }
