@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.Console;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +39,7 @@ public class TaskController {
         }};
 
             Optional<Wstl> wstl = dispatcher.handle(command)
-                    .map(mapper::FromTask);
+                    .map(mapper::fromTask);
 
             return wstl.isPresent()
                     ? ok(wstl.get())
@@ -68,11 +67,25 @@ public class TaskController {
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
         Optional<Wstl> wstl = dispatcher.handle(cmd)
-                .map(mapper::FromTask);
+                .map(mapper::fromTask);
 
         return wstl.isPresent()
                 ? ok(wstl.get())
                 : notFound(cmd.getId());
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getTasks(
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer pageSize,
+            UriComponentsBuilder uriBuilder) throws NoHandlerException {
+
+        GetTasksCommand cmd = new GetTasksCommand(page, pageSize);
+        WstlMapper mapper = new WstlMapper(uriBuilder);
+        Wstl wstl = mapper.fromPageOfTasks(dispatcher.handle(cmd));
+
+        // if there are no tasks, an empty collection should be returned
+        return ok(wstl);
     }
 
     private <T> ResponseEntity<T> ok(T content) {

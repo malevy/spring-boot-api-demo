@@ -10,5 +10,8 @@ CREATE TABLE TASK (
 );
 
 INSERT INTO TASK (title, description, due) VALUES ('feed the dog', 'the dog likes to eat', '2017-12-12');
+INSERT INTO TASK (title, description, due) VALUES ('rake leaves', '', '2017-12-13');
+INSERT INTO TASK (title, description, due) VALUES ('water change', 'good for the fish', '2017-12-13');
+INSERT INTO TASK (title, description, due) VALUES ('buy dog food', 'the dog likes to eat', '2017-12-14');
 
 

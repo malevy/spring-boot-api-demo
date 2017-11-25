@@ -32,7 +32,7 @@ public class WstlMapperTest {
         t.setDue(LocalDate.of(2017, 11, 12));
         t.markComplete(LocalDate.of(2017, 11, 13));
 
-        Wstl wstl = mapper.FromTask(t);
+        Wstl wstl = mapper.fromTask(t);
         Datum taskItem = wstl.getData().stream()
                 .findFirst()
                 .get();
@@ -49,7 +49,7 @@ public class WstlMapperTest {
 
         Task t = new Task(42, "new one");
 
-        Wstl wstl = mapper.FromTask(t);
+        Wstl wstl = mapper.fromTask(t);
         Datum taskItem = wstl.getData().stream()
                 .findFirst()
                 .get();
@@ -69,7 +69,7 @@ public class WstlMapperTest {
 
         Task t = new Task(42, "new one");
 
-        Wstl wstl = mapper.FromTask(t);
+        Wstl wstl = mapper.fromTask(t);
         Datum taskItem = wstl.getData().stream()
                 .findFirst()
                 .get();

@@ -11,5 +11,8 @@ public class WellKnown {
         public static final String SELF = "self";
         public static final String ITEM = "item";
         public static final String MARKCOMPLETE = "mark-complete";
+        public static final String COLLECTION = "collection";
+        public static final String NEXT = "next";
+        public static final String PREVIOUS = "previous";
     }
 }
