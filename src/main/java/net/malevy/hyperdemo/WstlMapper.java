@@ -82,8 +82,8 @@ public class WstlMapper {
         if (null != t.getCompletedOn()) item.getProperties().put(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
 
         item.getActions().add(createTaskSelfAction(t));
-        item.getActions().add(createTaskDeleteAction(t));
-        if (! t.isComplete()) item.getActions().add(markTaskCompleteAction(t));
+        if ( t.canDelete() ) item.getActions().add(createTaskDeleteAction(t));
+        if ( t.canComplete()) item.getActions().add(markTaskCompleteAction(t));
 
         return item;
     }

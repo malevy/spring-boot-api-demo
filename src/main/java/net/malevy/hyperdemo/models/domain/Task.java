@@ -55,6 +55,10 @@ public class Task {
         return null != completedOn;
     }
 
+    public boolean canComplete() { return !isComplete(); }
+
+    public boolean canDelete() { return true; }
+
     public void markComplete() {
         this.markComplete(LocalDate.now());
     }
