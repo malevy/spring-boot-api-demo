@@ -1,9 +1,6 @@
 package net.malevy.hyperdemo;
 
-import net.malevy.hyperdemo.commands.CommandDispatcher;
-import net.malevy.hyperdemo.commands.DeleteSingleTaskCommand;
-import net.malevy.hyperdemo.commands.GetSingleTaskCommand;
-import net.malevy.hyperdemo.commands.NoHandlerException;
+import net.malevy.hyperdemo.commands.*;
 import net.malevy.hyperdemo.support.HttpProblem;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +57,22 @@ public class TaskController {
         String result = dispatcher.handle(command);
 
         return ok(result);
+    }
+
+    @PostMapping(path = "/{id}/complete")
+    public ResponseEntity<?> completeTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) throws NoHandlerException {
+
+        MarkTaskCompleteCommand cmd = new MarkTaskCompleteCommand() {{
+            setId(id);
+        }};
+
+        WstlMapper mapper = new WstlMapper(uriBuilder);
+        Optional<Wstl> wstl = dispatcher.handle(cmd)
+                .map(mapper::FromTask);
+
+        return wstl.isPresent()
+                ? ok(wstl.get())
+                : notFound(cmd.getId());
     }
 
     private <T> ResponseEntity<T> ok(T content) {

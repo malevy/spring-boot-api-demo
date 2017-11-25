@@ -10,5 +10,6 @@ public class WellKnown {
         public static final String DELETE = "delete";
         public static final String SELF = "self";
         public static final String ITEM = "item";
+        public static final String MARKCOMPLETE = "mark-complete";
     }
 }

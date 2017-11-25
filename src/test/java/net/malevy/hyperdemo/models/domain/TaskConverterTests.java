@@ -38,4 +38,28 @@ public class TaskConverterTests {
         assertEquals("the importance is not correct", Task.Importance.NORMAL, t.getImportance());
 
     }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void givenTaskIsMissing_throw() {
+        TaskConverter.toDto(null);
+    }
+
+    @Test
+    public void whenGivenATask_convertToDto() {
+        Task t = new Task(1, "the-title", "the-description",
+                Task.Importance.HIGH,
+                LocalDate.of(2017, 11, 25),
+                LocalDate.of(2017, 11, 24));
+
+        TaskDto dto = TaskConverter.toDto(t);
+
+        assertEquals("the id is wrong", t.getId(), dto.getId());
+        assertEquals("the title is wrong", t.getTitle(), dto.getTitle());
+        assertEquals("the description is wrong", t.getDescription(), dto.getDescription());
+        assertEquals("the importance is wrong", t.getImportance().toString(), dto.getImportance());
+        assertEquals("the due date is wrong", t.getDue(), dto.getDue());
+        assertEquals("the completed date is wrong", t.getCompletedOn(), dto.getCompletedOn());
+
+    }
+
 }

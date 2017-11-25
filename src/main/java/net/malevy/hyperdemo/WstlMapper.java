@@ -21,6 +21,7 @@ public class WstlMapper {
     public static class Actions {
         public static final String SELF = "self";
         public static final String DELETE = "delete-task";
+        public static final String MARKCOMPLETE = "mark-complete";
     }
 
     public WstlMapper(UriComponentsBuilder uriComponentsBuilder) {
@@ -38,8 +39,6 @@ public class WstlMapper {
     }
 
     private Datum taskToDataItem(Task t) {
-        Action self = createSelfAction(t);
-        Action delete = createDeleteAction(t);
 
         Datum item = new Datum(WellKnown.Rels.ITEM);
         if (StringUtils.hasText(t.getTitle())) item.getProperties().put(Task.Properties.title, t.getTitle());
@@ -48,8 +47,9 @@ public class WstlMapper {
         if (null != t.getDue()) item.getProperties().put(Task.Properties.due, t.getDue().format(DateTimeFormatter.ISO_DATE));
         if (null != t.getCompletedOn()) item.getProperties().put(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
 
-        item.getActions().add(self);
-        item.getActions().add(delete);
+        item.getActions().add(createSelfAction(t));
+        item.getActions().add(createDeleteAction(t));
+        if (! t.isComplete()) item.getActions().add(markCompleteAction(t));
 
         return item;
     }
@@ -79,5 +79,19 @@ public class WstlMapper {
                 .href(URI.create(deleteLink))
                 .build();
     }
+
+    private Action markCompleteAction(Task t) {
+        String completeLink = this.uriBuilder
+                .withMethodName(TaskController.class, "completeTask", t.getId(), null)
+                .toUriString();
+        return Action.builder()
+                .rel(WellKnown.Rels.MARKCOMPLETE)
+                .name(Actions.MARKCOMPLETE)
+                .type(Action.Type.Unsafe)
+                .action(Action.RequestType.Replace)
+                .href(URI.create(completeLink))
+                .build();
+    }
+
 
 }

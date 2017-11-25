@@ -1,6 +1,7 @@
 package net.malevy.hyperdemo.models.domain;
 
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.util.Assert;
 
 public class TaskConverter {
@@ -21,6 +22,15 @@ public class TaskConverter {
 
         return task;
 
+    }
+
+    public static TaskDto toDto(Task t) {
+        Assert.notNull(t, "must provide a Task instance");
+
+        ModelMapper modelMapper = new ModelMapper();
+        TaskDto dto = modelMapper.map(t, TaskDto.class);
+
+        return dto;
     }
 
 }
