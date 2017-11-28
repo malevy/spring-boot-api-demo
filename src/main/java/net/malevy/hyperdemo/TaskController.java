@@ -1,15 +1,19 @@
 package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.commands.*;
+import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
 import net.malevy.hyperdemo.support.HttpProblem;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +32,20 @@ public class TaskController {
     ResponseEntity<HttpProblem> handleNoHandlerException(NoHandlerException nhe) {
         //TODO - should be logging this
         return this.serverError();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<HttpProblem> handleArgumentNotValidException(MethodArgumentNotValidException manv) {
+
+        HttpProblem validationErrors = HttpProblem.builder()
+                .title("validation errors")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build();
+
+        manv.getBindingResult().getFieldErrors().stream()
+                .forEach(e -> validationErrors.getAdditional().put(e.getField(), e.getDefaultMessage()));
+
+        return this.badRequest(validationErrors);
     }
 
     @GetMapping(path = "/{id}")
@@ -88,6 +106,28 @@ public class TaskController {
         return ok(wstl);
     }
 
+    @PutMapping(path="/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Integer id,
+                                        @Valid @RequestBody TaskInputVM taskInput,
+                                        UriComponentsBuilder uriBuilder) throws NoHandlerException {
+
+        UpdateTaskCommand cmd = new UpdateTaskCommand(id, taskInput);
+
+        WstlMapper mapper = new WstlMapper(uriBuilder);
+        Optional<Wstl> wstl = null;
+        try {
+            wstl = dispatcher.handle(cmd)
+                    .map(mapper::fromTask);
+        } catch (IllegalArgumentException argsException) {
+            return badRequest(argsException.getMessage());
+        }
+
+        return wstl.isPresent()
+                ? ok(wstl.get())
+                : notFound(cmd.getId());
+
+    }
+
     private <T> ResponseEntity<T> ok(T content) {
 
         return ResponseEntity.ok(content);
@@ -122,12 +162,17 @@ public class TaskController {
         return response;
     }
 
-    private ResponseEntity<HttpProblem> badRequest(String param) {
+    private ResponseEntity<HttpProblem> badRequest(String message) {
 
         HttpProblem problem = HttpProblem.builder()
-                .title(String.format("unable to process request. the required value '%s' was not provided", param))
+                .title(String.format("unable to process request. %s", message))
                 .status(HttpStatus.BAD_REQUEST.value())
                 .build();
+
+        return badRequest(problem);
+    }
+
+    private ResponseEntity<HttpProblem> badRequest(HttpProblem problem) {
 
         ResponseEntity<HttpProblem> response = ResponseEntity
                 .badRequest()

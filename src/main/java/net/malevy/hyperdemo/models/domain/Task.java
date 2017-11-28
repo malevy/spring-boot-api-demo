@@ -37,10 +37,10 @@ public class Task {
     }
 
     private final @Getter Integer id;
-    private @Getter @Setter String title;
-    private @Getter @Setter String description;
-    private @Getter @Setter Importance importance;
-    private @Getter @Setter LocalDate due;
+    private @Getter String title;
+    private @Getter String description;
+    private @Getter Importance importance;
+    private @Getter LocalDate due;
     private @Getter LocalDate completedOn;
 
     public Task(Integer id, String title) {
@@ -54,11 +54,9 @@ public class Task {
     public boolean isComplete() {
         return null != completedOn;
     }
-
     public boolean canComplete() { return !isComplete(); }
-
+    public boolean canUpdate() {return !isComplete();}
     public boolean canDelete() { return true; }
-
     public void markComplete() {
         this.markComplete(LocalDate.now());
     }
@@ -68,6 +66,32 @@ public class Task {
         this.completedOn = completedOn;
     }
 
+    public void setTitle(String title) {
+        assertModifiable();
+
+        if (StringUtils.isEmpty(title))
+            throw new IllegalArgumentException("tasks must at least have a title");
+
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        assertModifiable();
+        this.description = description;
+    }
+
+    public void setImportance(Importance importance) {
+        assertModifiable();
+        this.importance = (null == importance)
+            ? Importance.NORMAL
+            : importance;
+    }
+
+    public void setDue(LocalDate due) {
+        assertModifiable();
+        this.due = due;
+    }
+
     Task(Integer id, String title, String description, Importance importance, LocalDate due, LocalDate completedOn) {
         this.id = id;
         this.title = title;
@@ -75,5 +99,9 @@ public class Task {
         this.importance = importance;
         this.due = due;
         this.completedOn = completedOn;
+    }
+
+    private void assertModifiable() {
+        if (! canUpdate()) throw new IllegalStateException("cannot modify a completed task");
     }
 }
