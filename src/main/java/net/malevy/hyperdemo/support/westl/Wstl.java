@@ -3,6 +3,7 @@ package net.malevy.hyperdemo.support.westl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.malevy.hyperdemo.messageconverters.WellKnown;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,16 @@ public class Wstl implements HasActions {
      */
     public boolean hasData() {
         return !data.isEmpty();
+    }
+
+    /**
+     * Helper to find the Action representing the identity of this resource (ie self)
+     * @return the Action that represents the identity of this resource
+     */
+    public Optional<Action> getSelf() {
+        return actions.stream()
+                .filter(Action::isSelf)
+                .findFirst();
     }
 
 }

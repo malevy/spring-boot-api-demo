@@ -1,9 +1,11 @@
 package net.malevy.hyperdemo.commands.impl;
 
 import net.malevy.hyperdemo.TaskRepository;
+import net.malevy.hyperdemo.commands.AddTaskCommand;
 import net.malevy.hyperdemo.commands.CommandHandler;
 import net.malevy.hyperdemo.commands.UpdateTaskCommand;
 import net.malevy.hyperdemo.models.ModelMapperUtil;
+import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.domain.TaskConverter;
 import org.modelmapper.AbstractConverter;
@@ -16,40 +18,38 @@ import org.springframework.util.Assert;
 import java.util.Optional;
 
 @Component
-public class UpdateTaskCommandHandler implements CommandHandler<UpdateTaskCommand, Optional<Task>> {
+public class AddTaskCommandHandler implements CommandHandler<AddTaskCommand, Task> {
 
     private TaskRepository repository;
 
     @Autowired
-    public UpdateTaskCommandHandler(TaskRepository repository) {
+    public AddTaskCommandHandler(TaskRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Optional<Task> handle(UpdateTaskCommand command) {
+    public Task handle(final AddTaskCommand command) {
         Assert.notNull(command,"must supply request object");
+        Assert.notNull(command.getTaskInput(), "supplied request does not contain an input value");
 
-        ModelMapper modelMapper = ModelMapperUtil.build();
-
-        Optional<Task> task = repository
-                .findById(command.getId())
-                .map(TaskConverter::fromDto);
+        final ModelMapper modelMapper = ModelMapperUtil.build();
 
         try {
-            task.ifPresent(t -> modelMapper.map(command.getTaskInput(), t));
+            final Task task = new Task(-1, command.getTaskInput().getTitle());
+            modelMapper.map(command.getTaskInput(), task);
+            final TaskDto dto = TaskConverter.toDto(task);
+            final TaskDto persistedDto = repository.save(dto);
+            return TaskConverter.fromDto(persistedDto) ;
         } catch (MappingException me) {
             // surface the actual exception
             Throwable baseCause = ModelMapperUtil.findRootException(me);
             throw new IllegalArgumentException(baseCause.getMessage());
         }
 
-        return task.map(TaskConverter::toDto)
-                .map(repository::save)
-                .map(TaskConverter::fromDto);
     }
 
     @Override
     public boolean canHandle(Class<?> clazz) {
-        return UpdateTaskCommand.class.isAssignableFrom(clazz);
+        return AddTaskCommand.class.isAssignableFrom(clazz);
     }
 }

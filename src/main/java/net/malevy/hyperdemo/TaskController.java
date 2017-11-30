@@ -1,8 +1,10 @@
 package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.commands.*;
+import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
 import net.malevy.hyperdemo.support.HttpProblem;
+import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -128,9 +131,34 @@ public class TaskController {
 
     }
 
-    private <T> ResponseEntity<T> ok(T content) {
+    @PostMapping()
+    public ResponseEntity<?> addTask(@Valid @RequestBody TaskInputVM taskInput,
+                                     UriComponentsBuilder uriBuilder) throws NoHandlerException {
 
+        final AddTaskCommand command = new AddTaskCommand(taskInput);
+        final WstlMapper mapper = new WstlMapper(uriBuilder);
+        try {
+            final Task task = dispatcher.handle(command);
+            final Wstl wstl = mapper.fromTask(task);
+
+            final URI location = wstl.getSelf()
+                    .map(Action::getHref)
+                    .orElse(null);
+
+            return created(wstl, location);
+        } catch (IllegalArgumentException argsException) {
+            return badRequest(argsException.getMessage());
+        }
+
+    }
+
+    private <T> ResponseEntity<T> ok(T content) {
         return ResponseEntity.ok(content);
+    }
+
+    private <T> ResponseEntity<T> created(T content, URI location) {
+        return ResponseEntity.created(location)
+                .body(content);
     }
 
     private ResponseEntity<HttpProblem> notFound(Integer id) {
@@ -142,7 +170,7 @@ public class TaskController {
 
         ResponseEntity<HttpProblem> response = ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
 
         return response;
@@ -156,7 +184,7 @@ public class TaskController {
 
         ResponseEntity<HttpProblem> response = ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
 
         return response;
@@ -176,7 +204,7 @@ public class TaskController {
 
         ResponseEntity<HttpProblem> response = ResponseEntity
                 .badRequest()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
 
         return response;
