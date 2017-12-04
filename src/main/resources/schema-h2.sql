@@ -6,7 +6,8 @@ CREATE TABLE TASK (
     description VARCHAR2(4096) NULL,
     importance VARCHAR2(10) DEFAULT('normal'),
     due DATE NULL,
-    completedOn DATE NULL
+    completedOn DATE NULL,
+    notneeded VARCHAR2(10) NULL
 );
 
 INSERT INTO TASK (title, description, due) VALUES ('feed the dog', 'the dog likes to eat', '2017-12-12');

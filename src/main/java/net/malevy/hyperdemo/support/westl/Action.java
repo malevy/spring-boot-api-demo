@@ -40,7 +40,7 @@ public class Action {
     private final @Getter @NonNull Type type;
 
     public enum RequestType {
-        Append, Diff, Read, Remove, Replace
+        Append, Partial, Read, Remove, Replace
     }
 
     /**
