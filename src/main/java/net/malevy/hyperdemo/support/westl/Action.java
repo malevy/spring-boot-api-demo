@@ -78,6 +78,12 @@ public class Action {
     private @Singular @Getter List<Input> inputs;
 
     /**
+     * the media type of the returned resource (optional).
+     * refer to http://tools.ietf.org/html/rfc5988
+     */
+    private @Getter String contentType = "";
+
+    /**
      * Are there any inputs associated with this action?
      * @return boolean - TRUE if there are any inputs for this action; otherwise FALSE
      */
@@ -90,8 +96,14 @@ public class Action {
      * @return boolean - TRUE if this is a SELF URI; otherwise FALSE
      */
     public boolean isSelf() {
-        if (null == rels) return false;
-        return rels.stream()
-                .anyMatch(r -> WellKnown.Rels.SELF.equalsIgnoreCase(r));
+        return null != rels && rels.stream().anyMatch(WellKnown.Rels.SELF::equalsIgnoreCase);
+    }
+
+    /**
+     * Determines if this action represents a Safe action by evaluating the Type property
+     * @return TRUE if this action is SAFE; otherwise FALSE
+     */
+    public boolean isSafe() {
+        return Type.Safe.equals(this.type);
     }
 }

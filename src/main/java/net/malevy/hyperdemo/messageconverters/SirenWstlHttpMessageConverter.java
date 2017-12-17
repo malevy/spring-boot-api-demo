@@ -10,6 +10,7 @@ import com.google.code.siren4j.component.builder.LinkBuilder;
 import com.google.code.siren4j.component.impl.ActionImpl;
 import com.google.code.siren4j.meta.FieldType;
 import net.malevy.hyperdemo.support.westl.Action;
+import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.springframework.http.HttpInputMessage;
@@ -18,11 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -70,18 +73,81 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
          */
 
         List<Link> rootLinks = wstl.getActions().stream()
-                .filter(a -> Action.Type.Safe.equals(a.getType()))
+                .filter(a -> a.isSafe() && !a.hasInputs())
                 .map(SirenWstlHttpMessageConverter::buildLinkFromAction)
                 .collect(Collectors.toList());
 
-        Entity rep = EntityBuilder.createEntityBuilder()
+        List<com.google.code.siren4j.component.Action> rootActions = wstl.getActions().stream()
+                .filter(a -> !a.isSafe() || a.hasInputs())
+                .map(SirenWstlHttpMessageConverter::buildAction)
+                .collect(Collectors.toList());
+
+        EntityBuilder entityBuilder = EntityBuilder.createEntityBuilder();
+
+        if (hasSingleDataItem(wstl)) {
+            Datum item = wstl.getData().get(0);
+            entityBuilder = apply(entityBuilder, item);
+            entityBuilder.setRelationship(null); // remove rel
+        } else {
+
+            List<Entity> entities = wstl.getData().stream()
+                    .map(this::renderFrom)
+                    .collect(Collectors.toList());
+
+            entityBuilder = entityBuilder.addSubEntities(entities);
+        }
+
+        Entity rep = entityBuilder
                 .addLinks(rootLinks)
+                .addActions(rootActions)
                 .build();
 
         try (final PrintWriter writer = new PrintWriter(outputMessage.getBody())) {
             writer.write(rep.toString());
         }
+    }
 
+    private Entity renderFrom(Datum datum) {
+
+        return apply(EntityBuilder.createEntityBuilder(), datum).build();
+    }
+
+    private EntityBuilder apply(EntityBuilder builder, Datum datum) {
+
+        String clazz = StringUtils.hasText(datum.getClassification())
+                ? datum.getClassification()
+                : WellKnown.Rels.ITEM;
+
+        List<Link> links = datum.getActions().stream()
+                .filter(a -> a.isSafe() && !a.hasInputs())
+                .map(SirenWstlHttpMessageConverter::buildLinkFromAction)
+                .collect(Collectors.toList());
+
+        List<com.google.code.siren4j.component.Action> actions = datum.getActions().stream()
+                .filter(a -> !a.isSafe() || a.hasInputs())
+                .map(SirenWstlHttpMessageConverter::buildAction)
+                .collect(Collectors.toList());
+
+        return builder.setComponentClass(clazz)
+                .setRelationship(clazz)
+                .addProperties(convertMap(datum.getProperties()))
+                .addLinks(links)
+                .addActions(actions);
+
+    }
+
+    private boolean hasSingleDataItem(Wstl wstl) {
+        return wstl.hasData() && wstl.getData().size() == 1;
+    }
+
+    private Map<String, Object> convertMap(Map<String, String> original) {
+
+        Map<String, Object> result = new HashMap<>(original.size());
+        original
+                .entrySet()
+                .forEach(e -> result.put(e.getKey(), e.getValue()));
+
+        return result;
 
     }
 

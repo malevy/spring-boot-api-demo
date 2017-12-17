@@ -1,6 +1,8 @@
 package net.malevy.hyperdemo.support.westl;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Singular;
 
 import java.util.ArrayList;
 import java.util.HashMap;

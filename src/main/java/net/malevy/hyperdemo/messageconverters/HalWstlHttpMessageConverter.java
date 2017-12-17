@@ -131,7 +131,7 @@ public class HalWstlHttpMessageConverter extends AbstractHttpMessageConverter<Ws
         return rep;
     }
 
-    private boolean hasSingleDataItem(Wstl wstl) {
+    private boolean hasSingleDataItem(final Wstl wstl) {
         return wstl.hasData() && wstl.getData().size() == 1;
     }
 
