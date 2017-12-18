@@ -2,9 +2,7 @@ package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.messageconverters.WellKnown;
 import net.malevy.hyperdemo.models.domain.Task;
-import net.malevy.hyperdemo.support.westl.Action;
-import net.malevy.hyperdemo.support.westl.Datum;
-import net.malevy.hyperdemo.support.westl.Wstl;
+import net.malevy.hyperdemo.support.westl.*;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -27,6 +25,7 @@ public class WstlMapper {
         public static final String COLLECTION = "collection";
         public static final String NEXT = "next";
         public static final String PREVIOUS = "previous";
+        public static final String ADD = "add";
     }
 
     public WstlMapper(UriComponentsBuilder uriComponentsBuilder) {
@@ -35,10 +34,9 @@ public class WstlMapper {
 
     public Wstl fromTask(Task t) {
 
-        Wstl root = new Wstl(){{
-           setTitle(String.format("Task #{%s}", t.getId()));
-           getData().add(taskToDataItem(t));
-        }};
+        Wstl root = createDocument();
+        root.setTitle(String.format("Task #%s", t.getId()));
+        root.getData().add(taskToDataItem(t));
 
         return root;
     }
@@ -47,9 +45,8 @@ public class WstlMapper {
 
         Assert.notNull(pageOfTasks, "must provide a page instance");
 
-        Wstl root = new Wstl(){{
-            setTitle("tasks");
-        }};
+        Wstl root = createDocument();
+        root.setTitle("tasks");
         List<Datum> data = root.getData();
 
         root.getActions().add(this.createCollectionAction());
@@ -68,6 +65,13 @@ public class WstlMapper {
         }
 
         pageOfTasks.forEach(t -> data.add(taskToDataItem(t)));
+
+        return root;
+    }
+
+    private Wstl createDocument() {
+        Wstl root = new Wstl();
+        root.getActions().add(addTaskAction());
 
         return root;
     }
@@ -155,5 +159,55 @@ public class WstlMapper {
                 .build();
     }
 
+    private Action addTaskAction() {
+        final String addLink = this.uriBuilder
+                .withMethodName(TaskController.class, "addTask", null, null)
+                .toUriString();
+
+        final Input titleInput = Input.builder()
+                .name("title")
+                .prompt("title")
+                .required(true)
+                .type(Input.Type.Text)
+                .build();
+
+        final Input descriptionInput = Input.builder()
+                .name("description")
+                .prompt("description")
+                .required(false)
+                .type(Input.Type.Text)
+                .build();
+
+        final Input importanceInput = Input.builder()
+                .name("importance")
+                .prompt("importance")
+                .required(false)
+                .type(Input.Type.Select)
+                .suggest(SuggestItem.from(Task.Importance.NORMAL.toString()))
+                .suggest(SuggestItem.from(Task.Importance.HIGH.toString()))
+                .suggest(SuggestItem.from(Task.Importance.LOW.toString()))
+                .build();
+
+        final Input dueInput = Input.builder()
+                .name("due")
+                .prompt("due date")
+                .required(false)
+                .pattern("yyyy-mm-dd")
+                .type(Input.Type.Text)
+                .build();
+
+        return Action.builder()
+                .rel(WellKnown.Rels.ADD)
+                .name(Actions.ADD)
+                .type(Action.Type.Unsafe)
+                .action(Action.RequestType.Append)
+                .href(URI.create(addLink))
+                .input(titleInput)
+                .input(descriptionInput)
+                .input(importanceInput)
+                .input(dueInput)
+                .build();
+
+    }
 
 }

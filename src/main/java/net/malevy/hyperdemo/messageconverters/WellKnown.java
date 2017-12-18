@@ -14,5 +14,6 @@ public class WellKnown {
         public static final String COLLECTION = "collection";
         public static final String NEXT = "next";
         public static final String PREVIOUS = "previous";
+        public static final String ADD = "add";
     }
 }

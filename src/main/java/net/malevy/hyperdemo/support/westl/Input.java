@@ -45,7 +45,7 @@ public class Input {
     private @Getter String pattern;
 
     public enum Type {
-        Text, TeatArea, Select
+        Text, TextArea, Select
     }
 
     /**
