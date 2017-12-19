@@ -135,8 +135,8 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
         Wstl w = new Wstl();
 
         Datum di = new Datum(WellKnown.Rels.ITEM);
-        di.getProperties().put("foo","bar");
-        di.getProperties().put("now","n' later");
+        di.addProperty("foo","bar");
+        di.addProperty("now","n' later");
         w.addData(di);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
@@ -172,9 +172,9 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
                 .action(Action.RequestType.Read)
                 .build();
         Datum di = new Datum(WellKnown.Rels.ITEM);
-        di.getActions().add(action);
-        di.getProperties().put("foo","bar");
-        di.getProperties().put("now","n' later");
+        di.addAction(action);
+        di.addProperty("foo","bar");
+        di.addProperty("now","n' later");
         w.addData(di);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
@@ -208,7 +208,7 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
                 .action(Action.RequestType.Read)
                 .build();
         Datum di = new Datum(WellKnown.Rels.ITEM);
-        di.getActions().add(noop2);
+        di.addAction(noop2);
         w.addData(di);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();

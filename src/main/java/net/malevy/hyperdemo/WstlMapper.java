@@ -78,15 +78,15 @@ public class WstlMapper {
     private Datum taskToDataItem(Task t) {
 
         Datum item = new Datum(WellKnown.Rels.ITEM);
-        if (StringUtils.hasText(t.getTitle())) item.getProperties().put(Task.Properties.title, t.getTitle());
-        if (StringUtils.hasText(t.getDescription())) item.getProperties().put(Task.Properties.description, t.getDescription());
-        item.getProperties().put(Task.Properties.importance, t.getImportance().toString());
-        if (null != t.getDue()) item.getProperties().put(Task.Properties.due, t.getDue().format(DateTimeFormatter.ISO_DATE));
-        if (null != t.getCompletedOn()) item.getProperties().put(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
+        if (StringUtils.hasText(t.getTitle())) item.addProperty(Task.Properties.title, t.getTitle());
+        if (StringUtils.hasText(t.getDescription())) item.addProperty(Task.Properties.description, t.getDescription());
+        item.addProperty(Task.Properties.importance, t.getImportance().toString());
+        if (null != t.getDue()) item.addProperty(Task.Properties.due, t.getDue().format(DateTimeFormatter.ISO_DATE));
+        if (null != t.getCompletedOn()) item.addProperty(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
 
-        item.getActions().add(createTaskSelfAction(t));
-        if ( t.canDelete() ) item.getActions().add(createTaskDeleteAction(t));
-        if ( t.canComplete()) item.getActions().add(markTaskCompleteAction(t));
+        item.addAction(createTaskSelfAction(t));
+        if ( t.canDelete() ) item.addAction(createTaskDeleteAction(t));
+        if ( t.canComplete()) item.addAction(markTaskCompleteAction(t));
 
         return item;
     }

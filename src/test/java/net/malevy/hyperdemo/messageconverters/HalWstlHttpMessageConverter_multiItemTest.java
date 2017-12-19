@@ -22,11 +22,11 @@ public class HalWstlHttpMessageConverter_multiItemTest extends HalWstlHttpMessag
         Wstl w = new Wstl();
 
         Datum di1 = new Datum(WellKnown.Rels.ITEM);
-        di1.getProperties().put("foo","bar");
+        di1.addProperty("foo","bar");
         w.addData(di1);
 
         Datum di2 = new Datum(WellKnown.Rels.ITEM);
-        di2.getProperties().put("now","n' later");
+        di2.addProperty("now","n' later");
         w.addData(di2);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();

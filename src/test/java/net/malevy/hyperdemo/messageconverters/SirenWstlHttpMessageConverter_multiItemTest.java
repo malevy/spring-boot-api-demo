@@ -38,9 +38,9 @@ public class SirenWstlHttpMessageConverter_multiItemTest {
                 .action(Action.RequestType.Read)
                 .build();
         Datum juno = new Datum("pet");
-        juno.getProperties().put("name", "juno");
-        juno.getProperties().put("species", "dog");
-        juno.getActions().add(junolink);
+        juno.addProperty("name", "juno");
+        juno.addProperty("species", "dog");
+        juno.addAction(junolink);
         w.addData(juno);
 
         Action shadowlink = Action.builder()
@@ -52,9 +52,9 @@ public class SirenWstlHttpMessageConverter_multiItemTest {
                 .action(Action.RequestType.Read)
                 .build();
         Datum shadow = new Datum("pet");
-        shadow.getProperties().put("name", "shadow");
-        shadow.getProperties().put("species", "cat");
-        shadow.getActions().add(shadowlink);
+        shadow.addProperty("name", "shadow");
+        shadow.addProperty("species", "cat");
+        shadow.addAction(shadowlink);
         w.addData(shadow);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
