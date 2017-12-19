@@ -25,7 +25,7 @@ public class SirenWstlHttpMessageConverter_singleItemTest {
         Datum juno = new Datum("pet");
         juno.getProperties().put("name", "juno");
         juno.getProperties().put("breed", "mixed");
-        w.getData().add(juno);
+        w.addData(juno);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         SirenWstlHttpMessageConverter converter = new SirenWstlHttpMessageConverter();

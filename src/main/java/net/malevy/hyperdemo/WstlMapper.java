@@ -36,7 +36,7 @@ public class WstlMapper {
 
         Wstl root = createDocument();
         root.setTitle(String.format("Task #%s", t.getId()));
-        root.getData().add(taskToDataItem(t));
+        root.addData(taskToDataItem(t));
 
         return root;
     }
@@ -47,31 +47,30 @@ public class WstlMapper {
 
         Wstl root = createDocument();
         root.setTitle("tasks");
-        List<Datum> data = root.getData();
 
-        root.getActions().add(this.createCollectionAction());
-        root.getActions().add(this.createCollectionAction(WellKnown.Rels.SELF, Actions.SELF, pageOfTasks.getNumber(), pageOfTasks.getSize()));
+        root.addAction(this.createCollectionAction());
+        root.addAction(this.createCollectionAction(WellKnown.Rels.SELF, Actions.SELF, pageOfTasks.getNumber(), pageOfTasks.getSize()));
 
         if (pageOfTasks.hasNext()) {
-            root.getActions().add(this.createCollectionAction(WellKnown.Rels.NEXT, Actions.NEXT,
+            root.addAction(this.createCollectionAction(WellKnown.Rels.NEXT, Actions.NEXT,
                     pageOfTasks.nextPageable().getPageNumber(),
                     pageOfTasks.nextPageable().getPageSize()));
         }
 
         if (pageOfTasks.hasPrevious()) {
-            root.getActions().add(this.createCollectionAction(WellKnown.Rels.PREVIOUS, Actions.PREVIOUS,
+            root.addAction(this.createCollectionAction(WellKnown.Rels.PREVIOUS, Actions.PREVIOUS,
                     pageOfTasks.previousPageable().getPageNumber(),
                     pageOfTasks.previousPageable().getPageSize()));
         }
 
-        pageOfTasks.forEach(t -> data.add(taskToDataItem(t)));
+        pageOfTasks.forEach(t -> root.addData(taskToDataItem(t)));
 
         return root;
     }
 
     private Wstl createDocument() {
         Wstl root = new Wstl();
-        root.getActions().add(addTaskAction());
+        root.addAction(addTaskAction());
 
         return root;
     }

@@ -156,7 +156,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .target("search")
                 .input(petNameInput)
                 .build();
-        w.getActions().add(searchLink);
+        w.addAction(searchLink);
 
         final MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
@@ -188,7 +188,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .description("add a pet")
                 .target("pet")
                 .build();
-        w.getActions().add(addLink);
+        w.addAction(addLink);
 
         final MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
@@ -218,7 +218,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .type(Action.Type.Safe)
                 .action(Action.RequestType.Read)
                 .build();
-        w.getActions().add(action);
+        w.addAction(action);
 
         final MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
@@ -247,7 +247,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .type(Action.Type.Safe)
                 .action(Action.RequestType.Read)
                 .build();
-        w.getActions().add(dogLink);
+        w.addAction(dogLink);
 
         Action catlink = Action.builder()
                 .rel("pet")
@@ -258,7 +258,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .type(Action.Type.Safe)
                 .action(Action.RequestType.Read)
                 .build();
-        w.getActions().add(catlink);
+        w.addAction(catlink);
 
         Action addAction = Action.builder()
                 .rel("add")
@@ -268,7 +268,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .type(Action.Type.Unsafe)
                 .action(Action.RequestType.Append)
                 .build();
-        w.getActions().add(addAction);
+        w.addAction(addAction);
 
         final MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);

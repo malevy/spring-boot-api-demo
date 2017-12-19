@@ -41,7 +41,7 @@ public class SirenWstlHttpMessageConverter_multiItemTest {
         juno.getProperties().put("name", "juno");
         juno.getProperties().put("species", "dog");
         juno.getActions().add(junolink);
-        w.getData().add(juno);
+        w.addData(juno);
 
         Action shadowlink = Action.builder()
                 .rel(WellKnown.Rels.SELF)
@@ -55,7 +55,7 @@ public class SirenWstlHttpMessageConverter_multiItemTest {
         shadow.getProperties().put("name", "shadow");
         shadow.getProperties().put("species", "cat");
         shadow.getActions().add(shadowlink);
-        w.getData().add(shadow);
+        w.addData(shadow);
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         this.converter.writeInternal(w, output);
