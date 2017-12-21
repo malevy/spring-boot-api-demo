@@ -2,6 +2,7 @@ package net.malevy.hyperdemo.messageconverters;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import net.malevy.hyperdemo.support.westl.Content;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertThat;
 public class SirenWstlHttpMessageConverter_singleItemTest {
 
     private String jsonResult;
+    private final String expectedContentText = "hello world";
 
     @Before
     public void Setup() throws IOException {
@@ -26,6 +28,10 @@ public class SirenWstlHttpMessageConverter_singleItemTest {
         juno.addProperty("name", "juno");
         juno.addProperty("breed", "mixed");
         w.addData(juno);
+        w.setContent(new Content(){{
+            setType(Type.Text);
+            setText(expectedContentText);
+        }});
 
         MockHttpOutputMessage output = new MockHttpOutputMessage();
         SirenWstlHttpMessageConverter converter = new SirenWstlHttpMessageConverter();
@@ -44,6 +50,12 @@ public class SirenWstlHttpMessageConverter_singleItemTest {
     @Test(expected = PathNotFoundException.class)
     public void theRelIsRemoved() {
         JsonPath.read(jsonResult, "$.rel");
+    }
+
+    @Test
+    public void theContentIsRendered() {
+        assertThat("the content is wrong",
+                JsonPath.read(jsonResult, "$.properties.content"), is(expectedContentText));
     }
 
 }

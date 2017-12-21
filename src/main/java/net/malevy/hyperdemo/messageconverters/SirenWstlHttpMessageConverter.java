@@ -97,10 +97,15 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
             entityBuilder = entityBuilder.addSubEntities(entities);
         }
 
-        Entity rep = entityBuilder
+        entityBuilder = entityBuilder
                 .addLinks(rootLinks)
-                .addActions(rootActions)
-                .build();
+                .addActions(rootActions);
+
+        if (wstl.HasContent()) {
+            entityBuilder = entityBuilder.addProperty("content", wstl.getContent().getText());
+        }
+
+        Entity rep = entityBuilder.build();
 
         try (final PrintWriter writer = new PrintWriter(outputMessage.getBody())) {
             writer.write(rep.toString());
@@ -143,9 +148,7 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
     private Map<String, Object> convertMap(Map<String, String> original) {
 
         Map<String, Object> result = new HashMap<>(original.size());
-        original
-                .entrySet()
-                .forEach(e -> result.put(e.getKey(), e.getValue()));
+        original.forEach(result::put);
 
         return result;
 
@@ -165,7 +168,7 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
     public static com.google.code.siren4j.component.Action buildAction(Action action) {
 
         List<Field> fields = action.getInputs().stream()
-                .map(f -> buildField(f))
+                .map(SirenWstlHttpMessageConverter::buildField)
                 .collect(Collectors.toList());
 
         return ActionBuilder.createActionBuilder()
@@ -178,7 +181,7 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
 
     }
 
-    public static Field buildField(Input f) {
+    private static Field buildField(Input f) {
 
         return FieldBuilder.createFieldBuilder()
                 .setName(f.getName())

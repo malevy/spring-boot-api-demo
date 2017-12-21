@@ -3,6 +3,7 @@ package net.malevy.hyperdemo.support.westl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,6 @@ public class Content {
      */
     private @Getter @Setter String text;
 
-    private final @Getter Map<String, Object> data = new HashMap<String, Object>() {
-    };
+    public boolean hasText() { return StringUtils.hasText(text); }
 
 }

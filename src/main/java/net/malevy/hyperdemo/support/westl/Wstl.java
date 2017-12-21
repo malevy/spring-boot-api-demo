@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import net.malevy.hyperdemo.messageconverters.WellKnown;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -34,6 +35,8 @@ public class Wstl implements HasActions {
      * even when this element is missing.
      */
     private @Getter @Setter Content content;
+
+    public boolean HasContent() { return null != this.content && this.content.hasText();}
 
     private final List<Datum> data = new ArrayList<>();
 
