@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -45,7 +44,7 @@ public class TaskController {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .build();
 
-        manv.getBindingResult().getFieldErrors().stream()
+        manv.getBindingResult().getFieldErrors()
                 .forEach(e -> validationErrors.getAdditional().put(e.getField(), e.getDefaultMessage()));
 
         return this.badRequest(validationErrors);
@@ -117,7 +116,7 @@ public class TaskController {
         UpdateTaskCommand cmd = new UpdateTaskCommand(id, taskInput);
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
-        Optional<Wstl> wstl = null;
+        Optional<Wstl> wstl;
         try {
             wstl = dispatcher.handle(cmd)
                     .map(mapper::fromTask);
@@ -168,12 +167,10 @@ public class TaskController {
                 .status(HttpStatus.NOT_FOUND.value())
                 .build();
 
-        ResponseEntity<HttpProblem> response = ResponseEntity
+        return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
-
-        return response;
     }
 
     private ResponseEntity<HttpProblem> serverError() {
@@ -182,12 +179,10 @@ public class TaskController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build();
 
-        ResponseEntity<HttpProblem> response = ResponseEntity
+        return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
-
-        return response;
     }
 
     private ResponseEntity<HttpProblem> badRequest(String message) {
@@ -202,11 +197,9 @@ public class TaskController {
 
     private ResponseEntity<HttpProblem> badRequest(HttpProblem problem) {
 
-        ResponseEntity<HttpProblem> response = ResponseEntity
+        return ResponseEntity
                 .badRequest()
                 .contentType(new MediaType("application", "problem+json"))
                 .body(problem);
-
-        return response;
     }
 }

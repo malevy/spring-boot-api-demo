@@ -11,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class WstlMapper {
 
