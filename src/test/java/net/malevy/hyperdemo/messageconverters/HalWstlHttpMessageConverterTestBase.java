@@ -2,7 +2,7 @@ package net.malevy.hyperdemo.messageconverters;
 
 import com.theoryinpractise.halbuilder5.ResourceRepresentation;
 import com.theoryinpractise.halbuilder5.json.JsonRepresentationReader;
-import org.junit.Before;
+import org.junit.jupiter.api.*;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import java.io.StringReader;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class HalWstlHttpMessageConverterTestBase {
     protected HalWstlHttpMessageConverter converter;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.converter = new HalWstlHttpMessageConverter();
     }

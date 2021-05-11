@@ -5,15 +5,15 @@ import net.malevy.hyperdemo.commands.CommandDispatcher;
 import net.malevy.hyperdemo.commands.UpdateTaskCommand;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(TaskController.class)
 public class TaskController_addTaskIT {
 
@@ -61,8 +61,9 @@ public class TaskController_addTaskIT {
         verify(dispatcher).handle(cmdCaptor.capture());
 
         UpdateTaskCommand capturedCommand = cmdCaptor.getValue();
-        Assert.assertEquals("the due date was not converted correctly",
-                taskInput.getDue(), capturedCommand.getTaskInput().getDue());
+        Assertions.assertEquals(taskInput.getDue(),
+                capturedCommand.getTaskInput().getDue(),
+                "the due date was not converted correctly");
 
     }
 

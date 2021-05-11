@@ -5,21 +5,21 @@ import net.malevy.hyperdemo.commands.impl.AddTaskCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class AddTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private AddTaskCommandHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);
@@ -36,11 +36,11 @@ public class AddTaskCommandHandlerTest {
         assertFalse("should not support type", handler.canHandle(Double.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void whenNoTaskProvided_throw() {
 
         AddTaskCommand command = new AddTaskCommand(new TaskInputVM());
-        handler.handle(command);
+        assertThrows(IllegalArgumentException.class, () -> handler.handle(command));
     }
 
     @Test

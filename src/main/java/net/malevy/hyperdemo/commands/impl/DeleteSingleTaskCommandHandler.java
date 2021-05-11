@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 @Component
 public class DeleteSingleTaskCommandHandler implements CommandHandler<DeleteSingleTaskCommand, String> {
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public DeleteSingleTaskCommandHandler(TaskRepository repository) {
@@ -21,7 +21,7 @@ public class DeleteSingleTaskCommandHandler implements CommandHandler<DeleteSing
     public String handle(DeleteSingleTaskCommand deleteSingleTaskCommand) {
         Assert.notNull(deleteSingleTaskCommand,"must supply request object");
 
-        repository.delete(deleteSingleTaskCommand.getId());
+        repository.deleteById(deleteSingleTaskCommand.getId());
         return "removed";
     }
 

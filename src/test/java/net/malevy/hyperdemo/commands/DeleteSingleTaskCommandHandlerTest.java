@@ -2,25 +2,19 @@ package net.malevy.hyperdemo.commands;
 
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.impl.DeleteSingleTaskCommandHandler;
-import net.malevy.hyperdemo.commands.impl.GetSingleTaskCommandHandler;
-import net.malevy.hyperdemo.models.dataaccess.TaskDto;
-import net.malevy.hyperdemo.models.domain.Task;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.internal.verification.Times;
-import org.mockito.verification.VerificationMode;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 public class DeleteSingleTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private DeleteSingleTaskCommandHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);
@@ -45,7 +39,7 @@ public class DeleteSingleTaskCommandHandlerTest {
         }};
 
         String result = handler.handle(command);
-        verify(repo, times(1)).delete(0);
+        verify(repo, times(1)).deleteById(0);
     }
 
 }

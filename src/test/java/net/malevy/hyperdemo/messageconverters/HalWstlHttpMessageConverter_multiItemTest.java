@@ -4,14 +4,14 @@ import com.theoryinpractise.halbuilder5.ResourceRepresentation;
 import io.vavr.collection.Traversable;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class HalWstlHttpMessageConverter_multiItemTest extends HalWstlHttpMessageConverterTestBase {
 

@@ -1,25 +1,24 @@
 package net.malevy.hyperdemo.commands;
 
 import net.malevy.hyperdemo.TaskRepository;
-import net.malevy.hyperdemo.commands.impl.GetSingleTaskCommandHandler;
 import net.malevy.hyperdemo.commands.impl.MarkTaskCompleteCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class MarkTaskCompleteCommandHandlerTest {
 
     private TaskRepository repo;
     private MarkTaskCompleteCommandHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);

@@ -4,15 +4,17 @@ import java.lang.IllegalArgumentException;
 import java.time.LocalDate;
 
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class TaskConverterTests {
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test()
     public void whenDtoIsMissing_throw() {
-        TaskConverter.fromDto(null);
+
+        assertThrows(IllegalArgumentException.class, () -> TaskConverter.fromDto(null));
     }
 
     @Test()
@@ -39,9 +41,10 @@ public class TaskConverterTests {
 
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test()
     public void givenTaskIsMissing_throw() {
-        TaskConverter.toDto(null);
+
+        assertThrows(IllegalArgumentException.class, () -> TaskConverter.toDto(null));
     }
 
     @Test

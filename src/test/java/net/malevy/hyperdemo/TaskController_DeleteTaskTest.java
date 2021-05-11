@@ -4,21 +4,18 @@ package net.malevy.hyperdemo;
 import net.malevy.hyperdemo.commands.CommandDispatcher;
 import net.malevy.hyperdemo.commands.DeleteSingleTaskCommand;
 import net.malevy.hyperdemo.commands.NoHandlerException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.junit.Assert.assertEquals;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TaskController_DeleteTaskTest {
 
     @Mock
@@ -35,7 +32,7 @@ public class TaskController_DeleteTaskTest {
 
         ResponseEntity<?> response = controller.deleteTask(1);
 
-        assertEquals("the status is wrong", HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "the status is wrong");
     }
 
 }

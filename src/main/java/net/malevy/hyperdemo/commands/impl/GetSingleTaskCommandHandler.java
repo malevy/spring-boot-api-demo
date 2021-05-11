@@ -14,7 +14,7 @@ import java.util.Optional;
 @Component
 public class GetSingleTaskCommandHandler implements CommandHandler<GetSingleTaskCommand, Optional<Task>> {
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public GetSingleTaskCommandHandler(TaskRepository repository) {

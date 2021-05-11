@@ -6,7 +6,6 @@ import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -16,7 +15,10 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**

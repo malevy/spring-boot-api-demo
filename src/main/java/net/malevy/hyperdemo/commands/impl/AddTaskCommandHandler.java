@@ -3,24 +3,20 @@ package net.malevy.hyperdemo.commands.impl;
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.AddTaskCommand;
 import net.malevy.hyperdemo.commands.CommandHandler;
-import net.malevy.hyperdemo.commands.UpdateTaskCommand;
 import net.malevy.hyperdemo.models.ModelMapperUtil;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.domain.TaskConverter;
-import org.modelmapper.AbstractConverter;
 import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-
 @Component
 public class AddTaskCommandHandler implements CommandHandler<AddTaskCommand, Task> {
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public AddTaskCommandHandler(TaskRepository repository) {

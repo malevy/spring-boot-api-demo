@@ -7,24 +7,25 @@ import net.malevy.hyperdemo.commands.NoHandlerException;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.support.HttpProblem;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TaskController_GetTaskTest {
 
     @Mock
@@ -35,7 +36,7 @@ public class TaskController_GetTaskTest {
 
     private UriComponentsBuilder uriComponentsBuilder;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         uriComponentsBuilder = UriComponentsBuilder.fromUriString("http://localhost");
     }
@@ -50,9 +51,9 @@ public class TaskController_GetTaskTest {
 
         ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
 
-        assertEquals("the status is wrong", HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "the status is wrong");
         Wstl wstl = (Wstl) response.getBody();
-        assertTrue("there should be data", wstl.hasData());
+        Assertions.assertTrue(wstl.hasData(), "there should be data");
     }
 
     @Test
@@ -64,10 +65,10 @@ public class TaskController_GetTaskTest {
 
         ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
 
-        assertEquals("the status is wrong", HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "the status is wrong");
         HttpProblem p = (HttpProblem) response.getBody();
-        assertEquals("the http problem status is wrong", HttpStatus.NOT_FOUND.value(), p.getStatus());
-        assertEquals("the title is wrong", "Task with id 1 not found", p.getTitle());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), p.getStatus(), "the http problem status is wrong");
+        Assertions.assertEquals("Task with id 1 not found", p.getTitle(), "the title is wrong");
     }
 
 

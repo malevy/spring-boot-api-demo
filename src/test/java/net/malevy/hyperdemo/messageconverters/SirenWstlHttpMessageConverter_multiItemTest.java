@@ -5,22 +5,21 @@ import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import net.minidev.json.JSONArray;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class SirenWstlHttpMessageConverter_multiItemTest {
 
     private SirenWstlHttpMessageConverter converter;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         converter = new SirenWstlHttpMessageConverter();
     }

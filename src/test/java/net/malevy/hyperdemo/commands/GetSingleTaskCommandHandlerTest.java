@@ -4,21 +4,21 @@ import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.impl.GetSingleTaskCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class GetSingleTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private GetSingleTaskCommandHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);

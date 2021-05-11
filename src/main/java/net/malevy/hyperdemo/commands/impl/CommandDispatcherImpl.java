@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Component
 public class CommandDispatcherImpl implements CommandDispatcher {
 
-    private CommandHandler<?,?>[] handlers;
+    private final CommandHandler<?,?>[] handlers;
 
     @Autowired
     public CommandDispatcherImpl(CommandHandler<?,?>[] handlers) {

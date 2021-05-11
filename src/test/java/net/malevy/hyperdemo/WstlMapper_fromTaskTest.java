@@ -5,21 +5,22 @@ import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Before;
-import org.junit.Test;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 public class WstlMapper_fromTaskTest {
 
     private Wstl wstl;
 
-    @Before
+    @BeforeEach
     public void whenATaskIsMappedToWstl() {
 
         WstlMapper mapper = new WstlMapper(UriComponentsBuilder.fromUriString("http://localhost"));
@@ -39,12 +40,12 @@ public class WstlMapper_fromTaskTest {
                 .get();
 
         Map<String, String> properties = taskItem.getProperties();
-        assertEquals("title is wrong","new one", properties.get(Task.Properties.title));
-        assertEquals("description is wrong", "more stuff", properties.get(Task.Properties.description));
-        assertEquals("importance is wrong", Task.Importance.NORMAL, Task.Importance.lookup(properties.get(Task.Properties.importance)).get());
-        assertEquals("due date is wrong",
+        Assertions.assertEquals("new one", properties.get(Task.Properties.title), "title is wrong");
+        Assertions.assertEquals("more stuff", properties.get(Task.Properties.description), "description is wrong");
+        Assertions.assertEquals(Task.Importance.NORMAL, Task.Importance.lookup(properties.get(Task.Properties.importance)).get(), "importance is wrong");
+        Assertions.assertEquals(
                 LocalDate.of(2017, 11, 12),
-                LocalDate.parse(properties.get(Task.Properties.due)));
+                LocalDate.parse(properties.get(Task.Properties.due)), "due date is wrong");
     }
 
     @Test
@@ -72,12 +73,12 @@ public class WstlMapper_fromTaskTest {
                 .findFirst()
                 .get();
 
-        assertThat(addAction.getName(), is("add"));
-        assertThat(addAction.getRels(), hasItem(WellKnown.Rels.ADD));
-        assertThat(addAction.getType(), is(Action.Type.Unsafe));
-        assertThat(addAction.getAction(), is(Action.RequestType.Append));
-        assertThat(addAction.getHref().toString(), is("http://localhost/tasks/"));
-        assertThat(addAction.hasInputs(), is(true));
+        MatcherAssert.assertThat(addAction.getName(), is("add"));
+        MatcherAssert.assertThat(addAction.getRels(), hasItem(WellKnown.Rels.ADD));
+        MatcherAssert.assertThat(addAction.getType(), is(Action.Type.Unsafe));
+        MatcherAssert.assertThat(addAction.getAction(), is(Action.RequestType.Append));
+        MatcherAssert.assertThat(addAction.getHref().toString(), is("http://localhost/tasks/"));
+        MatcherAssert.assertThat(addAction.hasInputs(), is(true));
     }
 
     private void checkAction(String action, Action.Type type, Action.RequestType requestType, String uri) {
@@ -90,9 +91,9 @@ public class WstlMapper_fromTaskTest {
                 .findFirst()
                 .get();
 
-        assertEquals("type is wrong", type, actualAction.getType());
-        assertEquals("action is wrong", requestType, actualAction.getAction());
-        assertEquals("uri is wrong", uri, actualAction.getHref().toString());
+        Assertions.assertEquals( type, actualAction.getType(),"type is wrong");
+        Assertions.assertEquals( requestType, actualAction.getAction(),"action is wrong");
+        Assertions.assertEquals( uri, actualAction.getHref().toString(),"uri is wrong");
 
     }
 

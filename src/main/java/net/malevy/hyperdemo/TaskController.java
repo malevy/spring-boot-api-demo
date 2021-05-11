@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequestMapping(path = "/tasks")
 public class TaskController {
 
-    private CommandDispatcher dispatcher;
+    private final CommandDispatcher dispatcher;
 
     @Autowired
     public TaskController(CommandDispatcher dispatcher) {

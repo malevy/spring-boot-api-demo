@@ -1,27 +1,26 @@
 package net.malevy.hyperdemo.commands;
 
 import net.malevy.hyperdemo.TaskRepository;
-import net.malevy.hyperdemo.commands.impl.MarkTaskCompleteCommandHandler;
 import net.malevy.hyperdemo.commands.impl.UpdateTaskCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class UpdateTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private UpdateTaskCommandHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);
@@ -75,7 +74,7 @@ public class UpdateTaskCommandHandlerTest {
         assertEquals("due date is wrong", vm.getDue(), t.getDue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void whenAValidationErrorOccurs_itIsSurfaced() {
 
         TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
@@ -89,7 +88,7 @@ public class UpdateTaskCommandHandlerTest {
         }};
         UpdateTaskCommand command = new UpdateTaskCommand(1, vm);
 
-        handler.handle(command);
+        assertThrows(IllegalArgumentException.class, () -> handler.handle(command));
     }
 
 

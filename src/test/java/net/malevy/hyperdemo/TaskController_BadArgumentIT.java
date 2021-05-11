@@ -2,12 +2,13 @@ package net.malevy.hyperdemo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HypermediaDemoApplication.class})
 @WebAppConfiguration
 public class TaskController_BadArgumentIT {
@@ -28,7 +29,7 @@ public class TaskController_BadArgumentIT {
     private WebApplicationContext context;
     MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }

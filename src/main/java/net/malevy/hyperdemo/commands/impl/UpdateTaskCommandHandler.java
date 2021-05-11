@@ -6,7 +6,6 @@ import net.malevy.hyperdemo.commands.UpdateTaskCommand;
 import net.malevy.hyperdemo.models.ModelMapperUtil;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.domain.TaskConverter;
-import org.modelmapper.AbstractConverter;
 import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Component
 public class UpdateTaskCommandHandler implements CommandHandler<UpdateTaskCommand, Optional<Task>> {
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public UpdateTaskCommandHandler(TaskRepository repository) {

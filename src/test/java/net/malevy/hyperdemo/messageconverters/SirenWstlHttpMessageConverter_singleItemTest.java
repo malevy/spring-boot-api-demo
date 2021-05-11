@@ -5,21 +5,21 @@ import com.jayway.jsonpath.PathNotFoundException;
 import net.malevy.hyperdemo.support.westl.Content;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SirenWstlHttpMessageConverter_singleItemTest {
 
     private String jsonResult;
     private final String expectedContentText = "hello world";
 
-    @Before
+    @BeforeEach
     public void Setup() throws IOException {
 
 
@@ -47,9 +47,10 @@ public class SirenWstlHttpMessageConverter_singleItemTest {
         assertThat("breed is wrong", JsonPath.read(jsonResult, "$.properties.breed"), is("mixed"));
     }
 
-    @Test(expected = PathNotFoundException.class)
+    @Test()
     public void theRelIsRemoved() {
-        JsonPath.read(jsonResult, "$.rel");
+
+        assertThrows(PathNotFoundException.class, () -> JsonPath.read(jsonResult, "$.rel")) ;
     }
 
     @Test

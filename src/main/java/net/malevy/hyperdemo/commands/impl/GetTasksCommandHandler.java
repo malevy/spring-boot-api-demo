@@ -2,17 +2,13 @@ package net.malevy.hyperdemo.commands.impl;
 
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.CommandHandler;
-import net.malevy.hyperdemo.commands.GetSingleTaskCommand;
 import net.malevy.hyperdemo.commands.GetTasksCommand;
-import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.domain.TaskConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableArgumentResolver;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -25,7 +21,7 @@ public class GetTasksCommandHandler implements CommandHandler<GetTasksCommand, P
     public static final Integer DEFAULTPAGE = 0;
     public static final Integer DEFAULTPAGESIZE = 25;
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public GetTasksCommandHandler(TaskRepository repository) {
@@ -40,7 +36,7 @@ public class GetTasksCommandHandler implements CommandHandler<GetTasksCommand, P
 
         int pageSize = forcePageSizeToValidRange(command);
 
-        PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("id"));
 
         Page<Task> page = repository.findAll(pageRequest)
                 .map(TaskConverter::fromDto);

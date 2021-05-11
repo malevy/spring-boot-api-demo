@@ -2,7 +2,6 @@ package net.malevy.hyperdemo.commands.impl;
 
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.CommandHandler;
-import net.malevy.hyperdemo.commands.GetSingleTaskCommand;
 import net.malevy.hyperdemo.commands.MarkTaskCompleteCommand;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.domain.TaskConverter;
@@ -15,7 +14,7 @@ import java.util.Optional;
 @Component
 public class MarkTaskCompleteCommandHandler implements CommandHandler<MarkTaskCompleteCommand, Optional<Task>> {
 
-    private TaskRepository repository;
+    private final TaskRepository repository;
 
     @Autowired
     public MarkTaskCompleteCommandHandler(TaskRepository repository) {
@@ -30,9 +29,9 @@ public class MarkTaskCompleteCommandHandler implements CommandHandler<MarkTaskCo
                 .findById(command.getId())
                 .map(TaskConverter::fromDto);
 
-        task.ifPresent(t -> t.markComplete());
+        task.ifPresent(Task::markComplete);
         task.map(TaskConverter::toDto)
-                .ifPresent(d -> repository.save(d));
+                .ifPresent(repository::save);
 
         return task;
     }

@@ -1,7 +1,6 @@
 package net.malevy.hyperdemo.models.domain;
 
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
-import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
 import org.modelmapper.ModelMapper;
 import org.springframework.util.Assert;
 

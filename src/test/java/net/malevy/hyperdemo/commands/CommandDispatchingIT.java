@@ -2,18 +2,19 @@ package net.malevy.hyperdemo.commands;
 
 import net.malevy.hyperdemo.HypermediaDemoApplication;
 import net.malevy.hyperdemo.commands.CommandDispatchingTestComponents.StubCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
+
 
 @ActiveProfiles(profiles = "unittest")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {CommandDispatchingIT.class, HypermediaDemoApplication.class})
 @ComponentScan
 public class CommandDispatchingIT {

@@ -10,10 +10,8 @@ import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
 import net.minidev.json.JSONArray;
-import org.json.JSONException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
@@ -23,16 +21,16 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SirenWstlHttpMessageConverterTest {
 
     private SirenWstlHttpMessageConverter converter;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         converter = new SirenWstlHttpMessageConverter();
     }
@@ -49,7 +47,7 @@ public class SirenWstlHttpMessageConverterTest {
                 .filter(SirenWstlHttpMessageConverter.SIREN::isCompatibleWith)
                 .findFirst();
 
-        assertTrue("CJ should be supported by the converter", compatibleMediaTypes.isPresent());
+        assertTrue(compatibleMediaTypes.isPresent(), "CJ should be supported by the converter");
     }
 
     @Test
@@ -163,12 +161,7 @@ public class SirenWstlHttpMessageConverterTest {
 
         final String json = output.getBodyAsString();
 
-        try {
-            JsonPath.read(json, "$.links");
-            Assert.fail("the links array should not exist");
-        } catch (PathNotFoundException pnf) {
-            // this is good
-        }
+        assertThrows(PathNotFoundException.class, () -> JsonPath.read(json, "$.links"));
 
         JSONArray addAction = JsonPath.read(json, "$.actions[?(@.name == 'search')]");
         assertThat("the action was not found", addAction.size(), is(1));
@@ -195,12 +188,7 @@ public class SirenWstlHttpMessageConverterTest {
 
         final String json = output.getBodyAsString();
 
-        try {
-            JsonPath.read(json, "$.links");
-            Assert.fail("the links array should not exist");
-        } catch (PathNotFoundException pnf) {
-            // this is good
-        }
+        assertThrows(PathNotFoundException.class, () -> JsonPath.read(json, "$.links"));
 
         JSONArray addAction = JsonPath.read(json, "$.actions[?(@.name == 'addLink')]");
         assertThat("the action was not found", addAction.size(), is(1));
@@ -228,11 +216,11 @@ public class SirenWstlHttpMessageConverterTest {
         DocumentContext documentContext = JsonPath.parse(json);
         JSONArray result = documentContext.read("$.links[?('pet' in @.rel)].href");
         String actual = result.get(0).toString();
-        assertEquals("name is wrong", action.getHref().toString(), actual);
+        assertEquals( action.getHref().toString(), actual, "name is wrong");
 
         result = documentContext.read("$.links[?('pet' in @.rel)].title");
         actual = result.get(0).toString();
-        assertEquals("title is wrong", action.getPrompt(), actual);
+        assertEquals( action.getPrompt(), actual, "title is wrong");
     }
 
     @Test
@@ -277,14 +265,14 @@ public class SirenWstlHttpMessageConverterTest {
         DocumentContext documentContext = JsonPath.parse(json);
         JSONArray result = documentContext.read("$.links[?('dog' in @.rel)].title");
         String actual = result.get(0).toString();
-        assertEquals("title is wrong", dogLink.getPrompt(), actual);
+        assertEquals( dogLink.getPrompt(), actual, "title is wrong");
 
         result = documentContext.read("$.links[?('cat' in @.rel)].title");
         actual = result.get(0).toString();
-        assertEquals("title is wrong", catlink.getPrompt(), actual);
+        assertEquals( catlink.getPrompt(), actual, "title is wrong");
 
         result = documentContext.read("$.links[?('add' in @.rel)]");
-        assertEquals("no link should match", 0, result.size());
+        assertEquals(0, result.size(), "no link should match");
     }
 
 }

@@ -1,24 +1,22 @@
 package net.malevy.hyperdemo;
 
 import net.malevy.hyperdemo.models.domain.Task;
-import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Before;
-import org.junit.Test;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 public class WstlMapper_fromCompletedTask {
 
     private Wstl wstl;
 
-    @Before
+    @BeforeEach
     public void whenATaskIsMappedToWstl() {
 
         WstlMapper mapper = new WstlMapper(UriComponentsBuilder.fromUriString("http://localhost"));
@@ -41,7 +39,7 @@ public class WstlMapper_fromCompletedTask {
         final boolean completeLinkIsPresnet = taskItem.getActions().stream()
                 .anyMatch(a -> WstlMapper.Actions.MARKCOMPLETE.equalsIgnoreCase(a.getName()));
 
-        assertThat(completeLinkIsPresnet, is(false));
+        MatcherAssert.assertThat(completeLinkIsPresnet, is(false));
     }
 
 

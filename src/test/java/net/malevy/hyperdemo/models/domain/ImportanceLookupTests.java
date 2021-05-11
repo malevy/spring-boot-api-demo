@@ -1,10 +1,11 @@
 package net.malevy.hyperdemo.models.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 public class ImportanceLookupTests {
 

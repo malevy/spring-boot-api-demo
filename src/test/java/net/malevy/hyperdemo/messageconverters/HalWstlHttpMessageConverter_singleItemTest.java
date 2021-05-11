@@ -7,7 +7,7 @@ import net.malevy.hyperdemo.support.westl.Action;
 import net.malevy.hyperdemo.support.westl.Datum;
 import net.malevy.hyperdemo.support.westl.Input;
 import net.malevy.hyperdemo.support.westl.Wstl;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessageConverterTestBase {
 
