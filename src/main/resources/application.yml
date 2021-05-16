@@ -4,20 +4,26 @@ spring:
 
 ---
 spring:
-  profiles: unittest
+  config:
+    activate:
+      on-profile: unittest
 
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
 
 ---
 spring:
-  profiles: h2
+  config:
+    activate:
+      on-profile: h2
   datasource:
     platform: h2
-    url: jdbc:h2:mem:hyperdemo;Mode=Oracle;TRACE_LEVEL_SYSTEM_OUT=2;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:hyperdemo;TRACE_LEVEL_SYSTEM_OUT=2;DB_CLOSE_ON_EXIT=FALSE
     continue-on-error: false
   jpa:
-    database-platform: org.hibernate.dialect.Oracle10gDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none

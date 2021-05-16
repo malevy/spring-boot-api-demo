@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class TaskDto {
 
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String title;
