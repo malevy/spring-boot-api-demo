@@ -1,12 +1,10 @@
 package net.malevy.hyperdemo.models.domain;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class Task {
@@ -69,7 +67,7 @@ public class Task {
     public void setTitle(String title) {
         assertModifiable();
 
-        if (StringUtils.isEmpty(title))
+        if (! StringUtils.hasText(title))
             throw new IllegalArgumentException("tasks must at least have a title");
 
         this.title = title;

@@ -70,9 +70,9 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel("pet").get(0);
-        assertEquals("has the wrong href", action.getHref().toString(), Links.getHref(petLink));
+        assertEquals( action.getHref().toString(), Links.getHref(petLink),"has the wrong href");
         Map<String, String> map = Links.getProperties(petLink).get().toJavaMap();
-        assertEquals("title is wrong", action.getPrompt(), map.get(WellKnown.LinkProperties.TITLE));
+        assertEquals( action.getPrompt(), map.get(WellKnown.LinkProperties.TITLE),"title is wrong");
         assertFalse("link is not templated", Boolean.parseBoolean(map.get(WellKnown.LinkProperties.TEMPLATED)));
     }
 
@@ -103,7 +103,7 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel("search").get(0);
-        assertEquals("has the wrong href", action.getHref().toString() + "{?name}" , Links.getHref(petLink));
+        assertEquals( action.getHref().toString() + "{?name}" , Links.getHref(petLink),"has the wrong href");
         Map<String, String> map = Links.getProperties(petLink).get().toJavaMap();
         assertTrue("link is not templated", Boolean.parseBoolean(map.get(WellKnown.LinkProperties.TEMPLATED)));
     }
@@ -128,7 +128,7 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Link petLink = rep.getLinksByRel(WellKnown.Rels.SELF).get(0);
-        assertEquals("has the wrong href", action.getHref().toString(), Links.getHref(petLink));
+        assertEquals( action.getHref().toString(), Links.getHref(petLink),"has the wrong href");
     }
 
     @Test
@@ -147,8 +147,8 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
 
         Map<String, String> data = (HashMap<String,String>)rep.get();
-        assertEquals("foo has the wrong value", di.getProperties().get("foo"), data.get("foo"));
-        assertEquals("now has the wrong value", di.getProperties().get("now"), data.get("now"));
+        assertEquals(di.getProperties().get("foo"), data.get("foo"),"foo has the wrong value");
+        assertEquals( di.getProperties().get("now"), data.get("now"),"now has the wrong value");
 
     }
 
@@ -184,7 +184,7 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
 
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
         Link petLink = rep.getLinksByRel(WellKnown.Rels.SELF).get(0);
-        assertEquals("has the wrong self link", action.getHref().toString(), Links.getHref(petLink));
+        assertEquals( action.getHref().toString(), Links.getHref(petLink),"has the wrong self link");
 
     }
 
@@ -218,9 +218,9 @@ public class HalWstlHttpMessageConverter_singleItemTest extends HalWstlHttpMessa
 
         ResourceRepresentation<HashMap> rep = getHalMessageFromOutputMessage(output);
         Link noop1Link = rep.getLinksByRel("noop1").get(0);
-        assertEquals("noop1 was not found", noop1.getHref().toString(), Links.getHref(noop1Link));
+        assertEquals( noop1.getHref().toString(), Links.getHref(noop1Link),"noop1 was not found");
         Link noop2Link = rep.getLinksByRel("noop2").get(0);
-        assertEquals("noop2 was not found", noop2.getHref().toString(), Links.getHref(noop2Link));
+        assertEquals( noop2.getHref().toString(), Links.getHref(noop2Link),"noop2 was not found");
 
     }
 

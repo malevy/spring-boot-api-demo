@@ -1,9 +1,7 @@
 package net.malevy.hyperdemo;
 
 
-import net.malevy.hyperdemo.commands.CommandDispatcher;
-import net.malevy.hyperdemo.commands.MarkTaskCompleteCommand;
-import net.malevy.hyperdemo.commands.NoHandlerException;
+import net.malevy.hyperdemo.commands.*;
 import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.support.HttpProblem;
 import net.malevy.hyperdemo.support.westl.Wstl;
@@ -36,6 +34,7 @@ public class TaskController_CompleteTaskTest {
 
     @BeforeEach
     public void Setup() {
+
         uriComponentsBuilder = UriComponentsBuilder.fromUriString("http://localhost");
     }
 
@@ -47,7 +46,7 @@ public class TaskController_CompleteTaskTest {
         Mockito.when(dispatcher.handle(Mockito.any(MarkTaskCompleteCommand.class)))
                 .thenReturn(Optional.of(t));
 
-        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),"the status is wrong");
         Wstl wstl = (Wstl) response.getBody();
@@ -57,16 +56,15 @@ public class TaskController_CompleteTaskTest {
     @Test
     public void whenTheTaskIsNotFound_ReturnNotFound() throws NoHandlerException {
 
-
         Mockito.when(dispatcher.handle(Mockito.any(MarkTaskCompleteCommand.class)))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "the status is wrong");
         HttpProblem p = (HttpProblem) response.getBody();
         Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), p.getStatus(), "the http problem status is wrong");
-        Assertions.assertEquals("Task with id 1 not found", p.getTitle(), "the title is wrong");
+        Assertions.assertEquals( "Task with id 1 not found", p.getTitle(), "the title is wrong");
     }
 
 
