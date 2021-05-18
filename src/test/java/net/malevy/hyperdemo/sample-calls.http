@@ -1,0 +1,16 @@
+
+### create a task
+POST /localhost:8080/tasks
+content-type: application/vnd.siren+json
+
+{
+ "title": "creating an item",
+  "description": "this is how you create an item",
+  "importance": "normal",
+  "due": "2021-05-16"
+}
+
+### get all tasks
+GET /localhost:8080/tasks
+accept: application/vnd.siren+json
+
