@@ -12,11 +12,15 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -27,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TaskController.class)
+@ActiveProfiles("unittest")
 public class TaskController_updateTaskIT {
 
     @Autowired
@@ -51,6 +56,7 @@ public class TaskController_updateTaskIT {
 
         MockHttpServletRequestBuilder rb = put("/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + HttpHeaders.encodeBasicAuth("joe", "password", null))
                 .content(requestContent)
                 .accept(MediaType.APPLICATION_JSON);
 

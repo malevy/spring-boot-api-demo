@@ -31,5 +31,4 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .favorParameter(false);;
     }
 
-
 }
