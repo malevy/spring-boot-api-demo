@@ -88,9 +88,13 @@ public class TaskController {
     }
 
     @PostMapping(path = "/{id}/complete")
-    public ResponseEntity<?> completeTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) throws NoHandlerException {
+    public ResponseEntity<?> completeTask(@PathVariable Integer id,
+                                          UriComponentsBuilder uriBuilder,
+                                          Authentication authN) throws NoHandlerException {
 
-        MarkTaskCompleteCommand cmd = new MarkTaskCompleteCommand() {{
+        User user = (User) authN.getPrincipal();
+
+        MarkTaskCompleteCommand cmd = new MarkTaskCompleteCommand(user) {{
             setId(id);
         }};
 

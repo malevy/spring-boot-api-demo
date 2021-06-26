@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class TaskController_CompleteTaskTest {
     private TaskController controller;
 
     private UriComponentsBuilder uriComponentsBuilder;
+    private Authentication authentication = AuthMother.authentication();
 
     @BeforeEach
     public void Setup() {
@@ -46,7 +48,7 @@ public class TaskController_CompleteTaskTest {
         Mockito.when(dispatcher.handle(Mockito.any(MarkTaskCompleteCommand.class)))
                 .thenReturn(Optional.of(t));
 
-        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder, authentication);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),"the status is wrong");
         Wstl wstl = (Wstl) response.getBody();
@@ -59,7 +61,7 @@ public class TaskController_CompleteTaskTest {
         Mockito.when(dispatcher.handle(Mockito.any(MarkTaskCompleteCommand.class)))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.completeTask(1, uriComponentsBuilder, authentication);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "the status is wrong");
         HttpProblem p = (HttpProblem) response.getBody();

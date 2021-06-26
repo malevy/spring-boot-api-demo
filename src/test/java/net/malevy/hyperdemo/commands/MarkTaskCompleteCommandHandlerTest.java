@@ -1,5 +1,6 @@
 package net.malevy.hyperdemo.commands;
 
+import net.malevy.hyperdemo.AuthMother;
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.impl.MarkTaskCompleteCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
@@ -7,6 +8,7 @@ import net.malevy.hyperdemo.models.domain.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ public class MarkTaskCompleteCommandHandlerTest {
 
     private TaskRepository repo;
     private MarkTaskCompleteCommandHandler handler;
+    private User user = AuthMother.user();
 
     @BeforeEach
     public void setup() {
@@ -40,7 +43,7 @@ public class MarkTaskCompleteCommandHandlerTest {
 
         when(repo.findById(0)).thenReturn(Optional.empty());
 
-        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(){{
+        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(user){{
             setId(0);
         }};
 
@@ -55,7 +58,7 @@ public class MarkTaskCompleteCommandHandlerTest {
         TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
-        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(){{
+        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(user){{
             setId(1);
         }};
 
@@ -70,7 +73,7 @@ public class MarkTaskCompleteCommandHandlerTest {
         TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
-        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(){{
+        MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(user){{
             setId(1);
         }};
 

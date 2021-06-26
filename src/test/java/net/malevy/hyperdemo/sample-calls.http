@@ -24,3 +24,7 @@ authorization: Basic am9lOnBhc3N3b3Jk
 ###
 GET http://localhost:8080/tasks/1
 authorization: Basic am9lOnBhc3N3b3Jk
+
+###
+POST http://localhost:8080/tasks/1/complete
+authorization: Basic am9lOnBhc3N3b3Jk

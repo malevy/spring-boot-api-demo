@@ -147,7 +147,7 @@ public class WstlMapper {
 
     private Action markTaskCompleteAction(Task t) {
         String completeLink = this.uriBuilder
-                .withMethodName(TaskController.class, "completeTask", t.getId(), null)
+                .withMethodName(TaskController.class, "completeTask", t.getId(), null, null)
                 .toUriString();
         return Action.builder()
                 .rel(WellKnown.Rels.MARKCOMPLETE)
