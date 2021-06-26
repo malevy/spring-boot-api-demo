@@ -41,7 +41,7 @@ public class TaskController_CompleteTaskTest {
     @Test
     public void whenTheTaskIsFound_ReturnOK() throws NoHandlerException {
 
-        Task t = new Task(1, "the-thing");
+        Task t = new Task(1, "the-thing", "jack");
 
         Mockito.when(dispatcher.handle(Mockito.any(MarkTaskCompleteCommand.class)))
                 .thenReturn(Optional.of(t));

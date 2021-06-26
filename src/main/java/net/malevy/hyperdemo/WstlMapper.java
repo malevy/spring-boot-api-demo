@@ -82,6 +82,7 @@ public class WstlMapper {
         item.addProperty(Task.Properties.importance, t.getImportance().toString());
         if (null != t.getDue()) item.addProperty(Task.Properties.due, t.getDue().format(DateTimeFormatter.ISO_DATE));
         if (null != t.getCompletedOn()) item.addProperty(Task.Properties.completedOn, t.getCompletedOn().format(DateTimeFormatter.ISO_DATE));
+        if (StringUtils.hasText(t.getOwner())) item.addProperty(Task.Properties.owner, t.getOwner());
 
         item.addAction(createTaskSelfAction(t));
         if ( t.canDelete() ) item.addAction(createTaskDeleteAction(t));
@@ -159,7 +160,7 @@ public class WstlMapper {
 
     private Action addTaskAction() {
         final String addLink = this.uriBuilder
-                .withMethodName(TaskController.class, "addTask", null, null)
+                .withMethodName(TaskController.class, "addTask", null, null, null)
                 .toUriString();
 
         final Input titleInput = Input.builder()

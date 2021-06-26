@@ -16,6 +16,7 @@ public class Task {
         public static final String importance = "importance";
         public static final String due = "due";
         public static final String completedOn = "completedOn";
+        public static final String owner = "owner";
     }
 
     public enum Importance {
@@ -42,11 +43,12 @@ public class Task {
     private @Getter LocalDate completedOn;
     private @Getter String owner;
 
-    public Task(Integer id, String title) {
+    public Task(Integer id, String title, String owner) {
         Assert.notNull(title, "must provide a title");
 
         this.id = id;
         this.title = title;
+        this.owner = owner;
         this.setImportance(Importance.NORMAL);
     }
 

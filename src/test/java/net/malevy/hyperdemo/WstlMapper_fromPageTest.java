@@ -59,7 +59,7 @@ public class WstlMapper_fromPageTest {
     @Test
     public void hasNextCollectionAction() {
 
-        Task t = new Task(42, "new one");
+        Task t = new Task(42, "new one", "jack");
         Sort sort;
         Pageable pageable = PageRequest.of(0,1 );
         Page<Task> result = new PageImpl<>(Collections.singletonList(t), pageable, 10);
@@ -79,7 +79,7 @@ public class WstlMapper_fromPageTest {
     @Test
     public void hasPreviousCollectionAction() {
 
-        Task t = new Task(42, "new one");
+        Task t = new Task(42, "new one", "jack");
         Pageable pageable = PageRequest.of(1, 1);
         Page<Task> result = new PageImpl<>(Collections.singletonList(t), pageable, 10);
 
@@ -98,7 +98,7 @@ public class WstlMapper_fromPageTest {
     @Test
     public void whenTasksAreFound_theyAreIncluded() {
 
-        Task t = new Task(42, "new one");
+        Task t = new Task(42, "new one", "jack");
         Pageable pageable = PageRequest.of(1, 1);
         Page<Task> result = new PageImpl<>(Collections.singletonList(t), pageable, 10);
 

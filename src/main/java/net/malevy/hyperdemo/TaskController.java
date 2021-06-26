@@ -138,9 +138,12 @@ public class TaskController {
 
     @PostMapping()
     public ResponseEntity<?> addTask(@Valid @RequestBody TaskInputVM taskInput,
-                                     UriComponentsBuilder uriBuilder) throws NoHandlerException {
+                                     UriComponentsBuilder uriBuilder,
+                                     Authentication authN) throws NoHandlerException {
 
-        final AddTaskCommand command = new AddTaskCommand(taskInput);
+        User user = (User) authN.getPrincipal();
+
+        final AddTaskCommand command = new AddTaskCommand(user, taskInput);
         final WstlMapper mapper = new WstlMapper(uriBuilder);
         try {
             final Task task = dispatcher.handle(command);

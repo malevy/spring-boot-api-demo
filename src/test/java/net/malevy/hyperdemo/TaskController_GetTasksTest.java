@@ -40,7 +40,7 @@ public class TaskController_GetTasksTest {
     @Test
     public void whenTasksAreFound_ReturnOK() throws NoHandlerException {
 
-        Task t = new Task(1, "the-thing");
+        Task t = new Task(1, "the-thing", "jack");
         Sort sort;
         Pageable pageable = PageRequest.of(1,1);
         Page<Task> result = new PageImpl<>(Collections.singletonList(t), pageable, 10);

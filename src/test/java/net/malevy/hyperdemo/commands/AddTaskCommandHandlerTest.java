@@ -7,6 +7,8 @@ import net.malevy.hyperdemo.models.domain.Task;
 import net.malevy.hyperdemo.models.viewmodels.TaskInputVM;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDate;
 
@@ -18,12 +20,14 @@ public class AddTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private AddTaskCommandHandler handler;
+    private User user;
 
     @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);
         handler = new AddTaskCommandHandler(repo);
+        user = new User("jack", "password", AuthorityUtils.NO_AUTHORITIES);
     }
 
     @Test
@@ -39,7 +43,7 @@ public class AddTaskCommandHandlerTest {
     @Test()
     public void whenNoTaskProvided_throw() {
 
-        AddTaskCommand command = new AddTaskCommand(new TaskInputVM());
+        AddTaskCommand command = new AddTaskCommand(user, new TaskInputVM());
         assertThrows(IllegalArgumentException.class, () -> handler.handle(command));
     }
 
@@ -55,7 +59,7 @@ public class AddTaskCommandHandlerTest {
             setImportance("high");
             setDue(LocalDate.of(2017,11,26));
         }};
-        AddTaskCommand command = new AddTaskCommand(vm);
+        AddTaskCommand command = new AddTaskCommand(user, vm);
 
         Task task = handler.handle(command);
         assertEquals("title is wrong", vm.getTitle(), task.getTitle());
@@ -76,7 +80,7 @@ public class AddTaskCommandHandlerTest {
             setImportance("high");
             setDue(LocalDate.of(2017,11,26));
         }};
-        AddTaskCommand command = new AddTaskCommand(vm);
+        AddTaskCommand command = new AddTaskCommand(user, vm);
 
         handler.handle(command);
 

@@ -21,7 +21,7 @@ public class WstlMapper_fromCompletedTask {
 
         WstlMapper mapper = new WstlMapper(UriComponentsBuilder.fromUriString("http://localhost"));
 
-        Task t = new Task(42, "new one");
+        Task t = new Task(42, "new one", "jack");
         t.setDescription("more stuff");
         t.setDue(LocalDate.of(2017, 11, 12));
         t.markComplete(LocalDate.of(2017, 11, 12));

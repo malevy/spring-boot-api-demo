@@ -48,7 +48,7 @@ public class TaskController_GetTaskTest {
     @Test
     public void whenTheTaskIsFound_ReturnOK() throws NoHandlerException {
 
-        Task t = new Task(1, "the-thing");
+        Task t = new Task(1, "the-thing", "jack");
 
         Mockito.when(dispatcher.handle(Mockito.any(GetSingleTaskCommand.class)))
                 .thenReturn(Optional.of(t));

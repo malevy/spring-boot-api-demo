@@ -27,4 +27,5 @@ public class TaskInputVM {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate due;
+
 }

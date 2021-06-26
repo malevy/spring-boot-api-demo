@@ -31,7 +31,8 @@ public class AddTaskCommandHandler implements CommandHandler<AddTaskCommand, Tas
         final ModelMapper modelMapper = ModelMapperUtil.build();
 
         try {
-            final Task task = new Task(-1, command.getTaskInput().getTitle());
+            final Task task = new Task(-1, command.getTaskInput().getTitle(), command.getUser().getUsername());
+
             modelMapper.map(command.getTaskInput(), task);
             final TaskDto dto = TaskConverter.toDto(task);
             final TaskDto persistedDto = repository.save(dto);

@@ -25,7 +25,7 @@ public class WstlMapper_fromTaskTest {
 
         WstlMapper mapper = new WstlMapper(UriComponentsBuilder.fromUriString("http://localhost"));
 
-        Task t = new Task(42, "new one");
+        Task t = new Task(42, "new one", "jack");
         t.setDescription("more stuff");
         t.setDue(LocalDate.of(2017, 11, 12));
 
@@ -46,6 +46,9 @@ public class WstlMapper_fromTaskTest {
         Assertions.assertEquals(
                 LocalDate.of(2017, 11, 12),
                 LocalDate.parse(properties.get(Task.Properties.due)), "due date is wrong");
+
+        Assertions.assertEquals("jack", properties.get(Task.Properties.owner), "owner is wrong");
+
     }
 
     @Test
