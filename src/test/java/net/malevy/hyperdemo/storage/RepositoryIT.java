@@ -32,7 +32,7 @@ public class RepositoryIT {
         TaskDto dto = new TaskDto(null, "round-trip-task",
                 "some-description", null,
                 LocalDate.of(2017, 11, 12),
-                null);
+                null, "jack");
 
         dto = repository.save(dto);
 

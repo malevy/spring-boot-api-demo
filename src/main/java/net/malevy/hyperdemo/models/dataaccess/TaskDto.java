@@ -31,6 +31,8 @@ public class TaskDto {
     @Column(name = "completedon")
     private LocalDate completedOn;
 
+    private String owner;
+
     @PrePersist
     void pre() {
         if (StringUtils.isEmpty(this.importance)) {

@@ -7,12 +7,13 @@ CREATE TABLE TASK (
     importance VARCHAR2(10) DEFAULT('normal'),
     due DATE NULL,
     completedOn DATE NULL,
+    owner VARCHAR2(30) NOT NULL,
     notneeded VARCHAR2(10) NULL
 );
 
-INSERT INTO TASK (title, description, due) VALUES ('feed the dog', 'the dog likes to eat', '2017-12-12');
-INSERT INTO TASK (title, description, due) VALUES ('rake leaves', '', '2017-12-13');
-INSERT INTO TASK (title, description, due) VALUES ('water change', 'good for the fish', '2017-12-13');
-INSERT INTO TASK (title, description, due) VALUES ('buy dog food', 'the dog likes to eat', '2017-12-14');
+INSERT INTO TASK (title, description, due, owner) VALUES ('feed the dog', 'the dog likes to eat', '2017-12-12', 'joe');
+INSERT INTO TASK (title, description, due, owner) VALUES ('rake leaves', '', '2017-12-13', 'joe');
+INSERT INTO TASK (title, description, due, owner) VALUES ('water change', 'good for the fish', '2017-12-13', 'joe');
+INSERT INTO TASK (title, description, due, owner) VALUES ('buy dog food', 'the dog likes to eat', '2017-12-14', 'joe');
 
 

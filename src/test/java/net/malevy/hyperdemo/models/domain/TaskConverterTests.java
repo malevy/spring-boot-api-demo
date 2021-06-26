@@ -19,8 +19,11 @@ public class TaskConverterTests {
 
     @Test()
     public void givenGoodDto_ConvertToTask() {
-        TaskDto dto = new TaskDto(0, "A", "B", Task.Importance.HIGH.toString(),
-                LocalDate.of(2017, 11, 4), LocalDate.of(2017, 11, 5));
+        TaskDto dto = new TaskDto(0, "A", "B",
+                Task.Importance.HIGH.toString(),
+                LocalDate.of(2017, 11, 4),
+                LocalDate.of(2017, 11, 5),
+                "jack");
 
         Task t = TaskConverter.fromDto(dto);
         assertEquals("the id is not correct", dto.getId(), t.getId());
@@ -29,12 +32,16 @@ public class TaskConverterTests {
         assertEquals("the importance is not correct", Task.Importance.HIGH, t.getImportance());
         assertEquals("the due date is wrong", dto.getDue(), t.getDue());
         assertEquals("the completed date is wrong", dto.getCompletedOn(), t.getCompletedOn());
+        assertEquals("the owner is wrong", dto.getOwner(), t.getOwner());
     }
 
     @Test()
     public void missingImportance_convertedToNormal() {
-        TaskDto dto = new TaskDto(0, "A", "B", null,
-                LocalDate.of(2017, 11, 4), LocalDate.of(2017, 11, 5));
+        TaskDto dto = new TaskDto(0, "A", "B",
+                null,
+                LocalDate.of(2017, 11, 4),
+                LocalDate.of(2017, 11, 5),
+                "jack");
 
         Task t = TaskConverter.fromDto(dto);
         assertEquals("the importance is not correct", Task.Importance.NORMAL, t.getImportance());
@@ -52,7 +59,8 @@ public class TaskConverterTests {
         Task t = new Task(1, "the-title", "the-description",
                 Task.Importance.HIGH,
                 LocalDate.of(2017, 11, 25),
-                LocalDate.of(2017, 11, 24));
+                LocalDate.of(2017, 11, 24),
+                "jack");
 
         TaskDto dto = TaskConverter.toDto(t);
 
@@ -62,7 +70,7 @@ public class TaskConverterTests {
         assertEquals("the importance is wrong", t.getImportance().toString(), dto.getImportance());
         assertEquals("the due date is wrong", t.getDue(), dto.getDue());
         assertEquals("the completed date is wrong", t.getCompletedOn(), dto.getCompletedOn());
-
+        assertEquals("the owner is wrong", t.getOwner(), dto.getOwner());
     }
 
 }

@@ -52,7 +52,7 @@ public class MarkTaskCompleteCommandHandlerTest {
     @Test
     public void whenTaskIsFound_MarkTheTaskComplete() {
 
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
         MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(){{
@@ -67,7 +67,7 @@ public class MarkTaskCompleteCommandHandlerTest {
     @Test
     public void whenTaskIsFound_SaveTheCompletedTask() {
 
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
         MarkTaskCompleteCommand command = new MarkTaskCompleteCommand(){{

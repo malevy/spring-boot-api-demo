@@ -40,6 +40,7 @@ public class Task {
     private @Getter Importance importance;
     private @Getter LocalDate due;
     private @Getter LocalDate completedOn;
+    private @Getter String owner;
 
     public Task(Integer id, String title) {
         Assert.notNull(title, "must provide a title");
@@ -90,13 +91,14 @@ public class Task {
         this.due = due;
     }
 
-    Task(Integer id, String title, String description, Importance importance, LocalDate due, LocalDate completedOn) {
+    Task(Integer id, String title, String description, Importance importance, LocalDate due, LocalDate completedOn, String owner) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.importance = importance;
         this.due = due;
         this.completedOn = completedOn;
+        this.owner = owner;
     }
 
     private void assertModifiable() {

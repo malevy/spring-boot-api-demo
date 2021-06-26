@@ -18,7 +18,8 @@ public class TaskConverter {
                 dto.getDescription(),
                 priority,
                 dto.getDue(),
-                dto.getCompletedOn());
+                dto.getCompletedOn(),
+                dto.getOwner());
 
         return task;
 

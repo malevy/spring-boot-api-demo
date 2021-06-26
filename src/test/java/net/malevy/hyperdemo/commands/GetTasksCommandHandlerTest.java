@@ -40,7 +40,7 @@ public class GetTasksCommandHandlerTest {
 
     @Test
     public void whenCalled_dtosAreConvertedToTasks() {
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
 
         Page<TaskDto> repoResult = new PageImpl<TaskDto>(Arrays.asList(dto));
 

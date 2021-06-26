@@ -52,7 +52,7 @@ public class UpdateTaskCommandHandlerTest {
     @Test
     public void whenTaskIsFound_applyChanges() {
 
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
         // return the dto that is saved
@@ -77,7 +77,7 @@ public class UpdateTaskCommandHandlerTest {
     @Test()
     public void whenAValidationErrorOccurs_itIsSurfaced() {
 
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
         TaskInputVM vm = new TaskInputVM() {{
