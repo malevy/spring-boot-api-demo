@@ -50,7 +50,7 @@ public class TaskController_updateTaskIT {
         ObjectMapper mapper = new ObjectMapper();
         String requestContent = mapper.writeValueAsString(taskInput);
 
-        TaskDto dto1 = new TaskDto(1, "old-title", null, null, null, null);
+        TaskDto dto1 = new TaskDto(1, "old-title", null, null, null, null, "jack");
 
         when(dispatcher.handle(any(UpdateTaskCommand.class))).thenReturn(Optional.empty());
 
