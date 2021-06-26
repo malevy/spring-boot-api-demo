@@ -127,9 +127,12 @@ public class TaskController {
     @PutMapping(path="/{id}")
     public ResponseEntity<?> updateTask(@PathVariable Integer id,
                                         @Valid @RequestBody TaskInputVM taskInput,
-                                        UriComponentsBuilder uriBuilder) throws NoHandlerException {
+                                        UriComponentsBuilder uriBuilder,
+                                        Authentication authN) throws NoHandlerException {
 
-        UpdateTaskCommand cmd = new UpdateTaskCommand(id, taskInput);
+        User user = (User) authN.getPrincipal();
+
+        UpdateTaskCommand cmd = new UpdateTaskCommand(user, id, taskInput);
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
         Optional<Wstl> wstl;
