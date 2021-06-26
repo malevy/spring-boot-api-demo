@@ -17,8 +17,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,10 +35,14 @@ public class TaskController_GetTaskTest {
     private TaskController controller;
 
     private UriComponentsBuilder uriComponentsBuilder;
+    private Authentication authN;
 
     @BeforeEach
     public void Setup() {
+
         uriComponentsBuilder = UriComponentsBuilder.fromUriString("http://localhost");
+        User user = new User("joe", "password", Collections.emptyList());
+        authN = new UsernamePasswordAuthenticationToken(user, null);
     }
 
     @Test
@@ -45,7 +53,7 @@ public class TaskController_GetTaskTest {
         Mockito.when(dispatcher.handle(Mockito.any(GetSingleTaskCommand.class)))
                 .thenReturn(Optional.of(t));
 
-        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder, authN);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "the status is wrong");
         Wstl wstl = (Wstl) response.getBody();
@@ -59,7 +67,7 @@ public class TaskController_GetTaskTest {
         Mockito.when(dispatcher.handle(Mockito.any(GetSingleTaskCommand.class)))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder);
+        ResponseEntity<?> response = controller.getTask(1, uriComponentsBuilder, authN);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "the status is wrong");
         HttpProblem p = (HttpProblem) response.getBody();

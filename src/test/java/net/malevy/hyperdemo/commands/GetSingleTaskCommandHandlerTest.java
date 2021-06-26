@@ -6,7 +6,11 @@ import net.malevy.hyperdemo.models.dataaccess.TaskDto;
 import net.malevy.hyperdemo.models.domain.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
@@ -17,12 +21,18 @@ public class GetSingleTaskCommandHandlerTest {
 
     private TaskRepository repo;
     private GetSingleTaskCommandHandler handler;
+    private Authentication authN;
+    private User user;
 
     @BeforeEach
     public void setup() {
 
         repo = mock(TaskRepository.class);
         handler = new GetSingleTaskCommandHandler(repo);
+
+        user = new User("joe", "password", Collections.emptyList());
+        authN = new UsernamePasswordAuthenticationToken(user, null);
+
     }
 
     @Test
@@ -40,7 +50,7 @@ public class GetSingleTaskCommandHandlerTest {
 
         when(repo.findById(0)).thenReturn(Optional.empty());
 
-        GetSingleTaskCommand command = new GetSingleTaskCommand(){{
+        GetSingleTaskCommand command = new GetSingleTaskCommand(user){{
             setId(0);
         }};
 
@@ -52,10 +62,10 @@ public class GetSingleTaskCommandHandlerTest {
     @Test
     public void whenTaskIsFound_ConvertFromDtoAndReturn() {
 
-        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null);
+        TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
         when(repo.findById(1)).thenReturn(Optional.of(dto));
 
-        GetSingleTaskCommand command = new GetSingleTaskCommand(){{
+        GetSingleTaskCommand command = new GetSingleTaskCommand(user){{
             setId(1);
         }};
 

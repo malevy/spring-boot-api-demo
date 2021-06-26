@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,10 +53,14 @@ public class TaskController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getTask(@PathVariable Integer id, UriComponentsBuilder uriBuilder) throws NoHandlerException {
+    public ResponseEntity<?> getTask(@PathVariable Integer id,
+                                     UriComponentsBuilder uriBuilder,
+                                     Authentication authN) throws NoHandlerException {
+
+        User user = (User) authN.getPrincipal();
 
         WstlMapper mapper = new WstlMapper(uriBuilder);
-        GetSingleTaskCommand command = new GetSingleTaskCommand(){{
+        GetSingleTaskCommand command = new GetSingleTaskCommand(user){{
             setId(id);
         }};
 

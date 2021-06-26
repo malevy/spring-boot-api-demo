@@ -120,7 +120,7 @@ public class WstlMapper {
 
     private Action createTaskSelfAction(Task t) {
         String selfLink = this.uriBuilder
-                .withMethodName(TaskController.class, "getTask", t.getId(), null)
+                .withMethodName(TaskController.class, "getTask", t.getId(), null, null)
                 .toUriString();
         return Action.builder()
                 .rel(WellKnown.Rels.SELF)
