@@ -134,7 +134,7 @@ public class WstlMapper {
 
     private Action createTaskDeleteAction(Task t) {
         String deleteLink = this.uriBuilder
-                .withMethodName(TaskController.class, "deleteTask", t.getId())
+                .withMethodName(TaskController.class, "deleteTask", t.getId(), null)
                 .toUriString();
         return Action.builder()
                 .rel(WellKnown.Rels.DELETE)

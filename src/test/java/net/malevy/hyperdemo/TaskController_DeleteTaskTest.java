@@ -27,10 +27,11 @@ public class TaskController_DeleteTaskTest {
     @Test
     public void whenDeletingATask_ReturnNoContent() throws NoHandlerException {
 
+
         Mockito.when(dispatcher.handle(Mockito.any(DeleteSingleTaskCommand.class)))
                 .thenReturn("removed");
 
-        ResponseEntity<?> response = controller.deleteTask(1);
+        ResponseEntity<?> response = controller.deleteTask(1, AuthMother.authentication());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "the status is wrong");
     }

@@ -1,5 +1,6 @@
 package net.malevy.hyperdemo.commands;
 
+import net.malevy.hyperdemo.AuthMother;
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.impl.DeleteSingleTaskCommandHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ public class DeleteSingleTaskCommandHandlerTest {
     @Test
     public void whenExecuted_repositoryIsCalled() {
 
-        DeleteSingleTaskCommand command = new DeleteSingleTaskCommand(){{
+        DeleteSingleTaskCommand command = new DeleteSingleTaskCommand(AuthMother.user()){{
             setId(0);
         }};
 

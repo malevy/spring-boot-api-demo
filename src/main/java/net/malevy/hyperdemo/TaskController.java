@@ -73,9 +73,12 @@ public class TaskController {
     }
 
     @DeleteMapping(path="/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Integer id) throws NoHandlerException {
+    public ResponseEntity<?> deleteTask(@PathVariable Integer id,
+                                        Authentication authN) throws NoHandlerException {
 
-        DeleteSingleTaskCommand command = new DeleteSingleTaskCommand(){{
+        User user = (User) authN.getPrincipal();
+
+        DeleteSingleTaskCommand command = new DeleteSingleTaskCommand(user){{
             setId(id);
         }};
 
