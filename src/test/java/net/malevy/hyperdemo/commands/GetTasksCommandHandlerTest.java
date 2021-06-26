@@ -1,5 +1,6 @@
 package net.malevy.hyperdemo.commands;
 
+import net.malevy.hyperdemo.AuthMother;
 import net.malevy.hyperdemo.TaskRepository;
 import net.malevy.hyperdemo.commands.impl.GetTasksCommandHandler;
 import net.malevy.hyperdemo.models.dataaccess.TaskDto;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Arrays;
 
@@ -21,6 +23,7 @@ public class GetTasksCommandHandlerTest {
 
     private TaskRepository repo;
     private GetTasksCommandHandler handler;
+    private User user = AuthMother.user();
 
     @BeforeEach
     public void Setup() {
@@ -46,7 +49,7 @@ public class GetTasksCommandHandlerTest {
 
         when(repo.findAll(any(Pageable.class))).thenReturn(repoResult);
 
-        GetTasksCommand cmd = new GetTasksCommand(0,5);
+        GetTasksCommand cmd = new GetTasksCommand(user,0,5);
 
         Page<Task> result = handler.handle(cmd);
 
@@ -56,13 +59,13 @@ public class GetTasksCommandHandlerTest {
 
     @Test
     public void verifyPageNumberWithinBounds() {
-        GetTasksCommand cmd = new GetTasksCommand(-10,5);
+        GetTasksCommand cmd = new GetTasksCommand(user,-10,5);
         assertEquals( 0, handler.forcePageNumberToValidRange(cmd), "lower bound enforcement is wrong");
     }
 
     @Test
     public void verifyPageSizeWithinBounds() {
-        GetTasksCommand cmd = new GetTasksCommand(1,-10);
+        GetTasksCommand cmd = new GetTasksCommand(user, 1,-10);
         assertEquals( 0, handler.forcePageSizeToValidRange(cmd), "lower bound enforcement is wrong");
 
         cmd.setPageSize(GetTasksCommandHandler.MAXPAGESIZE+10);
@@ -71,13 +74,13 @@ public class GetTasksCommandHandlerTest {
 
     @Test
     public void whenPageNumberIsMissing_useDefault() {
-        GetTasksCommand cmd = new GetTasksCommand(null,10);
+        GetTasksCommand cmd = new GetTasksCommand(user,null,10);
         assertEquals( (long)GetTasksCommandHandler.DEFAULTPAGE, handler.forcePageNumberToValidRange(cmd), "default page number was not used");
     }
 
     @Test
     public void whenPageSizeIsMissing_useDefault() {
-        GetTasksCommand cmd = new GetTasksCommand(10,null);
+        GetTasksCommand cmd = new GetTasksCommand(user,10,null);
         assertEquals( (long)GetTasksCommandHandler.DEFAULTPAGESIZE, handler.forcePageSizeToValidRange(cmd), "default page size was not used");
 
     }

@@ -93,7 +93,7 @@ public class WstlMapper {
 
     private Action createCollectionAction() {
         String selfLink = this.uriBuilder
-                .withMethodName(TaskController.class, "getTasks", null, null, null)
+                .withMethodName(TaskController.class, "getTasks", null, null, null, null)
                 .toUriString();
         return Action.builder()
                 .rel(WellKnown.Rels.COLLECTION)
@@ -106,7 +106,7 @@ public class WstlMapper {
 
     private Action createCollectionAction(String rel, String name, int page, int pageSize) {
         String selfLink = this.uriBuilder
-                .withMethodName(TaskController.class, "getTasks", null, null, null)
+                .withMethodName(TaskController.class, "getTasks", null, null, null, null)
                 .queryParam("page", page)
                 .queryParam("size", pageSize)
                 .toUriString();

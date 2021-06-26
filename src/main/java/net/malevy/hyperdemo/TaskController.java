@@ -111,9 +111,12 @@ public class TaskController {
     public ResponseEntity<?> getTasks(
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer pageSize,
-            UriComponentsBuilder uriBuilder) throws NoHandlerException {
+            UriComponentsBuilder uriBuilder,
+            Authentication authN) throws NoHandlerException {
 
-        GetTasksCommand cmd = new GetTasksCommand(page, pageSize);
+        User user = (User) authN.getPrincipal();
+
+        GetTasksCommand cmd = new GetTasksCommand(user, page, pageSize);
         WstlMapper mapper = new WstlMapper(uriBuilder);
         Wstl wstl = mapper.fromPageOfTasks(dispatcher.handle(cmd));
 
