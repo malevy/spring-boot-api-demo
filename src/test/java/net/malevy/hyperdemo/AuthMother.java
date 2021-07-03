@@ -11,8 +11,17 @@ public class AuthMother {
         return new User("jack", "password", AuthorityUtils.NO_AUTHORITIES);
     }
 
+    public static User adminUser() {
+        return new User("jack",
+                "password",
+                AuthorityUtils.createAuthorityList("admin"));
+    }
+
     public static Authentication authentication() {
-        User user = user();
+        return authentication(user());
+    }
+
+    public static Authentication authentication(User user) {
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
