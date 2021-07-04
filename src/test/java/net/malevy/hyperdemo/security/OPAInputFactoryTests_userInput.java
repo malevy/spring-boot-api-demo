@@ -29,6 +29,15 @@ public class OPAInputFactoryTests_userInput {
     }
 
     @Test
+    public void isAuthenticationIsFalseForAnonymousUser() {
+        Authentication auth = AuthMother.anonymous();
+        Map<String, Object> input = OPAInputFactory.buildUserInput(auth);
+
+        assertTrue(input.containsKey("isAuthenticated"), "isAuthenticated key is missing");
+        assertFalse((Boolean) input.get("isAuthenticated"), "isAuthenticated is wrong");
+    }
+
+    @Test
     public void authoritiesAreCorrect() {
         Authentication auth = AuthMother.authentication(AuthMother.adminUser());
         Map<String, Object> input = OPAInputFactory.buildUserInput(auth);

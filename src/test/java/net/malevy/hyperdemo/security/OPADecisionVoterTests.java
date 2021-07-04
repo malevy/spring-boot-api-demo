@@ -52,7 +52,7 @@ public class OPADecisionVoterTests {
 
         HttpServletRequest request = new MockHttpServletRequest("GET", "https://example.com/api/tasks");
         FilterInvocation fi = new FilterInvocation(request, new MockHttpServletResponse(), new MockFilterChain());
-        Authentication nonAuthenticated = AuthMother.authentication();
+        Authentication nonAuthenticated = AuthMother.anonymous();
 
         Assertions.assertEquals(ACCESS_DENIED, voter.vote(nonAuthenticated, fi, new ArrayList<>()));
     }

@@ -1,5 +1,6 @@
 package net.malevy.hyperdemo.security;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
@@ -39,9 +40,13 @@ public class OPAInputFactory {
                     .collect(Collectors.toList());
         }
 
+        // AnonymousAuthenticationToken::isAuthenticated() returns true??!?
+        boolean authenticated = !(authentication instanceof AnonymousAuthenticationToken)
+                & authentication.isAuthenticated();
+
         Map<String, Object> user = new HashMap<>();
         user.put("name", authentication.getName());
-        user.put("isAuthenticated", authentication.isAuthenticated());
+        user.put("isAuthenticated", authenticated);
         user.put("authorities", authorities);
         return user;
     }
