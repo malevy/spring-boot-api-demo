@@ -2,8 +2,10 @@ package net.malevy.hyperdemo.config;
 
 import net.malevy.hyperdemo.security.OPADecisionVoter;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
@@ -25,6 +27,9 @@ import java.util.List;
 @Configuration
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
+    @Value("${app.security.enabled:true}")
+    private boolean enableSecurity;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(inMemoryUserDetailsManager());
@@ -34,7 +39,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // authorizeRequests(ar -> authorizeRequests.antMatchers("/something").hasAnyRole(role))
 
-        http.authorizeRequests().anyRequest().authenticated().accessDecisionManager(customAccessDecisionManager());
+        if (enableSecurity) {
+            http.authorizeRequests().anyRequest().authenticated().accessDecisionManager(customAccessDecisionManager());
+        }
+        else {
+            http.authorizeRequests().anyRequest().permitAll();
+        }
+
         http.httpBasic();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();

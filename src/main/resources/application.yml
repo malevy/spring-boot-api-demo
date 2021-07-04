@@ -2,11 +2,19 @@ spring:
   profiles:
     active: local,h2
 
+app:
+  security:
+    enabled: true
+
 ---
 spring:
   config:
     activate:
       on-profile: unittest
+
+app:
+  security:
+    enabled: false
 
 ---
 spring:
