@@ -17,7 +17,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @EnableWebSecurity
 @Configuration
-//@Profile("!unittest")
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
