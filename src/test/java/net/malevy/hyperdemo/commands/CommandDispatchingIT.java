@@ -5,18 +5,19 @@ import net.malevy.hyperdemo.commands.CommandDispatchingTestComponents.StubComman
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 
 @ActiveProfiles(profiles = "unittest")
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {CommandDispatchingIT.class, HypermediaDemoApplication.class})
-@ComponentScan
+@SpringJUnitConfig
+@SpringBootTest
 public class CommandDispatchingIT {
 
     @Autowired

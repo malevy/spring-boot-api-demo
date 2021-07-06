@@ -24,16 +24,22 @@ import static org.springframework.security.access.AccessDecisionVoter.ACCESS_GRA
 
 public class OPADecisionVoterTests {
 
-    final OkHttpClient client = new OkHttpClient();
-    final OPADecisionVoter voter = new OPADecisionVoter(client);
-    final WireMockServer server = new WireMockServer(8181);
+    private final OkHttpClient client;
+    private final WireMockServer server;
+    private OPADecisionVoter voter;
 
     final String denyResponse = "{'result':false}";
     final String approveResponse = "{'result':true}";
 
+    public OPADecisionVoterTests() {
+        server = new WireMockServer(0); // random port
+        client = new OkHttpClient();
+    }
+
     @BeforeEach
     public void preTest() {
         server.start();
+        voter = new OPADecisionVoter(client, String.format("http://localhost:%s/v1/data/api/allow", server.port()));
     }
 
     @AfterEach

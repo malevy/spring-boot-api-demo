@@ -1,0 +1,26 @@
+version: "3.8"
+
+networks: 
+  hyperdemo:
+
+services: 
+  opa:
+    image: openpolicyagent/opa:latest
+    restart: on-failure
+    ports: 
+    - 8181:8181
+    volumes:
+    - type: bind
+      source: ./src/opa/policies
+      target: /policies
+    command: ["run", "--server", "/policies"]
+
+  task-api:
+    image: hyperdemo:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports: 
+    - 8080:8080
+    depends_on: 
+    - opa
+    environment: 
+      app_security_opa_apiDecisionUrl: http://opa:8181/v1/data/api/allow

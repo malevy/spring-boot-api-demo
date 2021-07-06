@@ -5,7 +5,6 @@ import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
@@ -30,6 +29,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Value("${app.security.enabled:true}")
     private boolean enableSecurity;
 
+    @Value("${app.security.opa.apiDecisionUrl}")
+    public String OPADecisionUrl;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(inMemoryUserDetailsManager());
@@ -52,13 +54,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public OkHttpClient httpClient() {
-        return new OkHttpClient();
-    }
-
-    @Bean
     public AccessDecisionManager customAccessDecisionManager() {
-        List<AccessDecisionVoter<?>> voters = Collections.singletonList(new OPADecisionVoter(this.httpClient()));
+        OPADecisionVoter decisionVoter = new OPADecisionVoter(new OkHttpClient(), this.OPADecisionUrl);
+        List<AccessDecisionVoter<?>> voters = Collections.singletonList(decisionVoter);
         return new UnanimousBased(voters);
     }
 

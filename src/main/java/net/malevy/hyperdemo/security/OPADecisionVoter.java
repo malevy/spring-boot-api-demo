@@ -3,6 +3,7 @@ package net.malevy.hyperdemo.security;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
@@ -17,19 +18,21 @@ import java.util.Map;
 import static net.malevy.hyperdemo.security.OPAInputFactory.buildHttpInput;
 import static net.malevy.hyperdemo.security.OPAInputFactory.buildUserInput;
 
-@Component
+
 @Slf4j
 public class OPADecisionVoter implements AccessDecisionVoter<Object> {
 
     private final OkHttpClient httpClient;
+    private final String opaApiDecisionUrl;
 
-    public OPADecisionVoter(OkHttpClient httpClient) {
+    public OPADecisionVoter(OkHttpClient httpClient, String opaApiDecisionUrl) {
 
         // since we're tunneling a GET via a POST, it is
         // safe to retry.
         this.httpClient = httpClient.newBuilder()
                 .retryOnConnectionFailure(true)
                 .build();
+        this.opaApiDecisionUrl = opaApiDecisionUrl;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class OPADecisionVoter implements AccessDecisionVoter<Object> {
 
         RequestBody body = RequestBody.create(payload.toString(), MediaType.parse("application/json"));
         Request decisionRequest = new Request.Builder()
-                .url("http://localhost:8181/v1/data/api/allow")
+                .url(opaApiDecisionUrl)
                 .post(body)
                 .build();
 

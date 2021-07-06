@@ -8,19 +8,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+@SpringJUnitConfig
+@SpringBootTest
 @ActiveProfiles(profiles = {"h2"})
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {HypermediaDemoApplication.class})
-@WebAppConfiguration
-// just to verify that the config is correct
+//@EnableConfigurationProperties
 public class RepositoryIT {
 
     @Autowired

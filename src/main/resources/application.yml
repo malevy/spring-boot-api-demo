@@ -4,7 +4,8 @@ spring:
 
 app:
   security:
-    enabled: true
+    opa:
+      apiDecisionUrl: http://localhost:8181/v1/data/api/allow
 
 ---
 spring:
@@ -35,3 +36,4 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none
+
