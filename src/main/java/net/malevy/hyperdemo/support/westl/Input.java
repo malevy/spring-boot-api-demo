@@ -31,11 +31,13 @@ public class Input {
     /**
      * A flag to indicate this value is to be rendered as read-only at runtime.
      */
+    @Builder.Default
     private @Getter boolean readOnly = false;
 
     /**
      * A flag to indicate this value is an required input.
      */
+    @Builder.Default
     private @Getter boolean required = false;
 
     /**

@@ -12,18 +12,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 public class GetTasksCommandHandlerTest {
 
     private TaskRepository repo;
     private GetTasksCommandHandler handler;
-    private User user = AuthMother.user();
+    private final User user = AuthMother.user();
 
     @BeforeEach
     public void Setup() {
@@ -45,7 +45,7 @@ public class GetTasksCommandHandlerTest {
     public void whenCalled_dtosAreConvertedToTasks() {
         TaskDto dto = new TaskDto(1, "title", "description", "low", null, null, "jack");
 
-        Page<TaskDto> repoResult = new PageImpl<TaskDto>(Arrays.asList(dto));
+        Page<TaskDto> repoResult = new PageImpl<TaskDto>(Collections.singletonList(dto));
 
         when(repo.findAll(any(Pageable.class))).thenReturn(repoResult);
 

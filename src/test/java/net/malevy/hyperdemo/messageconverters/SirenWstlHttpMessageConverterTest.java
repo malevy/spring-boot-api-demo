@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SirenWstlHttpMessageConverterTest {
@@ -76,7 +76,7 @@ public class SirenWstlHttpMessageConverterTest {
         Link actualLink = SirenWstlHttpMessageConverter.buildLinkFromAction(petLink);
 
         assertThat("the uri is wrong", actualLink.getHref(), is(petLink.getHref().toString()));
-        assertThat("the rel is wrong", Arrays.asList( actualLink.getRel()), hasItems("pet"));
+        assertThat("the rel is wrong", Arrays.asList( actualLink.getRel()), contains("pet"));
         assertThat("the title is wrong", actualLink.getTitle(), is(petLink.getPrompt()));
     }
 

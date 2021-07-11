@@ -35,7 +35,7 @@ public class TaskDto {
 
     @PrePersist
     void pre() {
-        if (StringUtils.isEmpty(this.importance)) {
+        if (!StringUtils.hasText(this.importance)) {
             this.importance = Task.Importance.NORMAL.toString();
         }
     }

@@ -87,7 +87,7 @@ public class SirenWstlHttpMessageConverter extends AbstractHttpMessageConverter<
         if (hasSingleDataItem(wstl)) {
             Datum item = wstl.getData().get(0);
             entityBuilder = apply(entityBuilder, item);
-            entityBuilder.setRelationship(null); // remove rel
+            entityBuilder = entityBuilder.setRelationship((String[]) null); // remove rel
         } else {
 
             List<Entity> entities = wstl.getData().stream()

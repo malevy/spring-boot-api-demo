@@ -81,6 +81,7 @@ public class Action {
      * the media type of the returned resource (optional).
      * refer to http://tools.ietf.org/html/rfc5988
      */
+    @Builder.Default
     private @Getter String contentType = "";
 
     /**
