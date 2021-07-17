@@ -5,7 +5,7 @@ The API consists of a number of topics to trial
 -  supporting [HAL](https://tools.ietf.org/id/draft-kelly-json-hal-01.html) and [Siren](https://github.com/kevinswiber/siren) media types 
    via content negotiation and [WeSTL](https://github.com/RWCBook/wstl-spec)
 -  decomposing the typical 'service' component using the Command Pattern with
-   a [dynamic dispatch](net/malevy/hyperdemo/commands/impl/CommandDispatcherImpl.java)
+   a [dynamic dispatch](src/main/java/net/malevy/hyperdemo/commands/impl/CommandDispatcherImpl.java)
 -  authorization delegated to [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## security
@@ -39,13 +39,32 @@ The Maven Spring Boot plug-in is used to package the service into a container
 mvn spring-boot:build-image
 ```
 
-# deployment
+# deployment with Docker
 there are two docker-compose files in the root
 - [docker-compose.yml](docker-compose.yml) will spin up the task-api service and 
 include OpenPolicyAgent as a sidecar. The API is exposed on port 8080
 - [docker-compose-svcs.yml](docker-compose-svcs.yml) will spin up the task-api and
 OpenPolicyAgent as two separate containers. The API is exposed on port 8080
   and OPA on port 8181
+
+# deployment with Kubernetes
+there is also a K8s deployment file in the ./kube folder. it assumes an existing configmap
+which can be created with the following command
+
+```shell
+kubectl create configmap opa-policy-config --from-file=src/opa/policies/api.rego
+```
+
+the configmap is mapped to a volume and mounted to the OPA container as the source for policies. once the configmap is 
+in place, the solution can be deployed
+
+```shell
+kubectl apply -f kube/task-api.yaml
+```
+
+the task API is exposed at http://localhost:8080
+
+the K8s deployment has been tested on the cluster supported by Docker Desktop
 
 ## API testing
 a [file](src/test/java/net/malevy/hyperdemo/sample-calls.http) 

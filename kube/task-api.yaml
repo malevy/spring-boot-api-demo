@@ -1,0 +1,56 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: task-service
+  labels:
+    sample: sidecar
+spec:
+  type: LoadBalancer
+  selector:
+    app: task-api-workload
+  ports:
+    - name: http
+      targetPort: task-api-port
+      port: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api-workload
+  labels:
+    class: workload
+    sample: sidecar
+spec:
+  selector:
+    matchLabels:
+      app: task-api-workload
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: task-api-workload
+        class: workload
+    spec:
+      containers:
+        - image: hyperdemo:0.0.1-SNAPSHOT
+          name: task-api
+          ports:
+            - containerPort: 8080
+              name: task-api-port
+        - image: openpolicyagent/opa
+          name: opa-sidecar
+          args:
+          - "run"
+          - "--ignore=.*"
+          - "--server"
+          - "--watch"
+          - "/etc/config/policies"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config/policies
+      volumes:
+        - name: config-volume
+          configMap:
+            name: opa-policy-config
